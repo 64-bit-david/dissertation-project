@@ -1,13 +1,13 @@
 from flask import Blueprint, jsonify, request, Response
 import requests
 import os
-from src.models import User, Word_Frequency, db
+from models import User, Word_Frequency, db
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, jwt_required
 from datetime import datetime
-from src.constants import news_sites
+from constants import news_sites
 
 
-routes=Blueprint('/', __name__, url_prefix='/api/v1/')
+routes=Blueprint('/', __name__, url_prefix='/api/v1')
 auth=Blueprint('auth', __name__, url_prefix='/api/v1/auth')
 
 
@@ -18,15 +18,24 @@ auth=Blueprint('auth', __name__, url_prefix='/api/v1/auth')
 def get_all():
     return jsonify(news_sites.sites)    
 
+
 @routes.get('/word_frequency')
 def get_word_freq():
-    website = request.args.get('website')
-    if website not in news_sites.sites:
-        return "Error - incorrect paramaters (website name) - see api documentation", 400
-    az_func = os.environ.get('AZ_FUNC_1')
-    url = az_func + '?website=' + website    
-    res = requests.get(url)
-    # return res.text
+    websites = request.args.getlist('websites')
+    print(websites)
+    az_func_url = os.environ.get('AZ_FUNC_1')
+    for i, website in enumerate(websites):
+        if website not in news_sites.sites:
+            return "Error - incorrect paramaters (website name) - see api documentation", 400
+        if i == 0:
+            az_func_url += '?websites=' + website
+        else:
+            az_func_url += '&websites=' + website
+
+    
+
+            
+    res = requests.get(az_func_url)
     return Response(
         res.text,
         status=res.status_code,
@@ -46,7 +55,8 @@ def add_frequency():
     w_f = Word_Frequency(user_id=current_user, wordCount=word_frequencies, website=website, updated_at=datetime.utcnow())
     db.session.add(w_f)
     db.session.commit()
-    return 'aaaaaaaaaaaaaa'
+    print('word frequency data saved')
+    return 'Post successful'
 
 
 @routes.get('/get_word_frequencies')
@@ -90,7 +100,7 @@ def sign_up():
     db.session.add(user)
     db.session.commit()
 
-    return 'user created'
+    return 'user created successfully'
 
 
 @auth.post('/login')
@@ -104,6 +114,7 @@ def login():
         if user.password == password:
             access_token = create_access_token(identity=user.id)
             refresh_token = create_refresh_token(identity=user.id)
+            print("user logged in successfully")
             return jsonify({
                  'user':{
                     'access_token': access_token,

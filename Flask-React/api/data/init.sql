@@ -1,0 +1,3 @@
+CREATE DATABASE IF NOT EXISTS trendsdb;
+CREATE USER IF NOT EXISTS 'webapp'@'%' IDENTIFIED BY 'Chndld34r';
+GRANT ALL PRIVILEGES ON trendsdb.* TO 'webapp'@'%';

@@ -1,5 +1,6 @@
-flask
-python-dotenv
+Flask==2.0.2
+Flask-SQLAlchemy==2.5.1
+mariadb==1.0.9
 requests
 flask-jwt-extended
 validators

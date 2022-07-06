@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+    websvc:
+        container_name: "with_mariadb_websvc"
+        build: .
+        ports:
+            - "5000:5000"
+        depends_on:
+            - db
+        links:
+            - db
+        restart: 'always'
+        env_file: .env
+        environment:
+            SVC_HOST: 0.0.0.0
+            DB_NAME: "${DB_NAME}"
+            DB_USER: "${DB_USER}"
+            DB_PASSWORD: "${DB_PASSWORD}"
+            DB_SERVER: db
+    db:
+        container_name: "with_mariadb_db"
+        image: "mariadb:latest"
+        ports:
+            - "3306:3306"
+        restart: 'always'
+        environment:
+            MARIADB_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
+        volumes:
+            - ./data:/docker-entrypoint-initdb.d

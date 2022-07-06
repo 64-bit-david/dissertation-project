@@ -22,8 +22,6 @@ def fetch_html(url):
     chrome = headless_chrome.HeadlessChrome()
 
     page_source = chrome.get(url)
-    print('----------------------------------------------')
-    print('ABOVE IS UNSTOPPABLE')
     with open('page_markup.html', 'w', encoding='utf-8') as file:
         file.write(page_source)
 
@@ -94,41 +92,42 @@ def word_counter(text):
     counts = Counter(tokens)
     #Needs to be in this format for react word cloud module to work
     result = [{'value': key, 'count': count} for key, count in counts.most_common(50)]
-    result = json.dumps(result)
     return result
 
 
 
-
-def main(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Python HTTP trigger function processed a request.')
-    website = req.params['website']
+def word_frequency(website):
+    """
+    A function that returns the most common words from the front page of a news website
+    """
     markup = fetch_html(news_site_scrape_data.websites[website])
     headlines = get_header_tags(markup, website)
     filtered_headlines = headline_filter(headlines)
     counted_words = word_counter(filtered_headlines)
+    return counted_words
 
-    return func.HttpResponse(counted_words)
+def main(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Python HTTP trigger function processed a request.')
 
-
-
-
-
-
-
-    name = req.params.get('name')
-    if not name:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            name = req_body.get('name')
-
-    if name:
-        return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
-    else:
-        return func.HttpResponse(
-             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
-             status_code=200
-        )
+    websites = req.params['websites'].split(',')
+    print(len(websites))
+    if len(websites) == 1:
+        print('----------------------------------------------')
+        print('getting headlines from single website')
+        print('----------------------------------------------')
+        words = word_frequency(websites[0])
+        result = json.dumps(words)
+        print('done')
+        return func.HttpResponse(result)
+        
+    elif len(websites) > 1:
+        result = {}
+        print('----------------------------------------------')
+        print(f'getting headlines from {len(websites)} websites')
+        print('----------------------------------------------')
+        for site in websites:
+            result[site] = word_frequency(site)
+        result = json.dumps(result)
+        print('done')
+        return func.HttpResponse(result)
+        
