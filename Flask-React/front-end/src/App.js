@@ -1,8 +1,6 @@
-import {useState, useEffect} from 'react';
-import DropDown from './components/DropDown'
+import {useState} from 'react';
 import NavBar from './components/Navbar';
-import ResultTable from './components/ResultTable';
-import {Container, Header, Dropdown, Form, Button} from 'semantic-ui-react';
+import {Container, Header} from 'semantic-ui-react';
 import Home from './components/Home';
 import Results from './components/Results';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -10,18 +8,6 @@ import PreviousResults from './PreviousResults';
 import LogInModal from './components/LogInModal';
 import SignUpModal from './components/SignUpModal';
 
-
-
-const customStyles = {
-  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-  },
-};
 
 
 
@@ -36,7 +22,7 @@ function App() {
 
   const [newsData, setNewsData] = useState(null)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  // const [error, setError] = useState(null)
   const[analysisValue, setAnalysisValue] = useState(null)
   const [websiteChoice, setWebsiteChoice] = useState(null)
   const [websiteChoice1, setWebsiteChoice1] = useState(null)
@@ -106,6 +92,7 @@ function App() {
   return (
     <div className="App">
       <Router>
+        <Container>
         <NavBar 
               modalLogInIsOpen={modalLogInIsOpen}
               modalSignUpIsOpen={modalSignUpIsOpen}
@@ -116,9 +103,19 @@ function App() {
           <Route exact path='/previous-results' element={<PreviousResults/>} />
           <Route path = '/' element={<FrontPageRenderHelper/>} />
       </Routes>
+      </Container>
       </Router>    
-      <LogInModal modalLogInIsOpen={modalLogInIsOpen} setModalLogInIsOpen={setModalLogInIsOpen}/>
-      {/* <SignUpModal /> */}
+      <LogInModal
+           modalLogInIsOpen={modalLogInIsOpen} 
+           setModalLogInIsOpen={setModalLogInIsOpen}
+           modalSignUpIsOpen={modalSignUpIsOpen}
+           setModalSignUpIsOpen={setModalSignUpIsOpen}
+           />
+      <SignUpModal 
+          modalLogInIsOpen={modalLogInIsOpen} 
+          setModalLogInIsOpen={setModalLogInIsOpen}
+          modalSignUpIsOpen={modalSignUpIsOpen}
+          setModalSignUpIsOpen={setModalSignUpIsOpen}/>
     </div>
   );
   }

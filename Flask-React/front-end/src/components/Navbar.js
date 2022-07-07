@@ -6,7 +6,11 @@ import {Link} from 'react-router-dom';
 
 
 
-function NavBar({modalLogInIsOpen, setModalLogInIsOpen}) {
+function NavBar( 
+                {modalLogInIsOpen,
+                 setModalLogInIsOpen, 
+                 modalSignUpIsOpen, 
+                 setModalSignUpIsOpen }) {
 
 
     const [activeItem, setActiveItem] = useState('home')
@@ -16,7 +20,8 @@ function NavBar({modalLogInIsOpen, setModalLogInIsOpen}) {
     }
 
     const handleLogInClick = () => {
-        setModalLogInIsOpen(!modalLogInIsOpen);
+        // setModalLogInIsOpen(!modalLogInIsOpen);
+        setModalSignUpIsOpen(!modalSignUpIsOpen);
     }
 
     return (
@@ -40,7 +45,7 @@ function NavBar({modalLogInIsOpen, setModalLogInIsOpen}) {
      
         <Menu.Menu position='right'>
             <Menu.Item
-            name='Log In'
+            name='Sign In'
             active={activeItem === 'login'}
             onClick={()=>handleLogInClick()}
 
