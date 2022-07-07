@@ -1,12 +1,35 @@
 import React, {useState} from 'react';
 import ResultTable from './ResultTable';
-import { Form, Radio, Container, Header } from 'semantic-ui-react'
+import { Form, Radio, Container, Header, Button } from 'semantic-ui-react'
 import ResultWordCloud from './ResultWordCloud';
 import ResultBar from './ResultBar';
 import ResultPie from './ResultPie';
-const Results = ({newsData, websiteChoice, sites}) => {
+
+
+
+
+
+const Results = (
+                {newsData, 
+                 setNewsData, 
+                 websiteChoice, 
+                 sites, 
+                 setAnalysisValue, 
+                 setWebsiteChoice, 
+                 setWebsiteChoice1, 
+                 setWebsiteChoice2}) => {
 
     const [value, setValue] = useState('table');
+
+    const goBackEventHandler = () => {
+        setNewsData(null)
+        setAnalysisValue(null)
+        setWebsiteChoice(null)
+        setWebsiteChoice1(null)
+        setWebsiteChoice2(null)
+        setNewsData(null)
+        
+    }
 
 
     const RenderResultView = () => {
@@ -71,6 +94,10 @@ const Results = ({newsData, websiteChoice, sites}) => {
                 </Form.Field>
             </Form>
             <RenderResultView/>
+            <Container>
+            <Button onClick={()=> goBackEventHandler()}>Go Back</Button>
+            <Button >Save Result</Button>
+            </Container>
         </Container>
     )
 };

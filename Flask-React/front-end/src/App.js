@@ -5,16 +5,32 @@ import ResultTable from './components/ResultTable';
 import {Container, Header, Dropdown, Form, Button} from 'semantic-ui-react';
 import Home from './components/Home';
 import Results from './components/Results';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import PreviousResults from './PreviousResults';
+import LogInModal from './components/LogInModal';
+import SignUpModal from './components/SignUpModal';
+
+
+
+const customStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+  },
+};
 
 
 
 
+// Modal.setAppElement()
 function App() {
 
-  // const flaskHome =  'http://127.0.0.1:5000/api/v1'
 
 
-  //Use Effect fetch newsites from api!
 
   
 
@@ -25,9 +41,8 @@ function App() {
   const [websiteChoice, setWebsiteChoice] = useState(null)
   const [websiteChoice1, setWebsiteChoice1] = useState(null)
   const [websiteChoice2, setWebsiteChoice2] = useState(null)
-
-
-
+  const [modalLogInIsOpen, setModalLogInIsOpen] = useState(false);
+  const [modalSignUpIsOpen, setModalSignUpIsOpen] = useState(false);
 
 
   // const sites = ['BBC', 'The Guardian', 'Fox News']
@@ -43,7 +58,6 @@ function App() {
     {key: 'wf', value:'wf', text: 'Word Frequency'},
     {key: 'wfc', value: 'wfc', text: 'Word Frequency Compare'}
   ]
-
 
   
 
@@ -71,7 +85,17 @@ function App() {
       )
     }else{
       return(
-        <Results newsData={newsData} websiteChoice={websiteChoice} sites={sites}/>
+        <Results 
+              newsData={newsData} 
+              websiteChoice={websiteChoice} 
+              sites={sites} 
+              setNewsData={setNewsData}
+              setWebsiteChoice={setWebsiteChoice}
+              setWebsiteChoice1={setWebsiteChoice1}
+              setWebsiteChoice2={setWebsiteChoice2}
+              setAnalysisValue={setAnalysisValue}
+
+              />
       )
     }
   }
@@ -81,19 +105,20 @@ function App() {
 
   return (
     <div className="App">
-      <Container style={{ marginTop: '1em' }}>
-        <NavBar/>
-        <Container text style={{ marginTop: '4em' }}> 
-        <Container style={{ margin:'2em 0' }} textAlign='center'>
-         <FrontPageRenderHelper/>
-        </Container>
-        
-      
-         {/* {newsData && <ResultTable newsData={newsData}/>} */}
-
-        </Container>
-      </Container>
-       
+      <Router>
+        <NavBar 
+              modalLogInIsOpen={modalLogInIsOpen}
+              modalSignUpIsOpen={modalSignUpIsOpen}
+              setModalLogInIsOpen={setModalLogInIsOpen}
+              setModalSignUpIsOpen={setModalSignUpIsOpen}/>
+              
+        <Routes>
+          <Route exact path='/previous-results' element={<PreviousResults/>} />
+          <Route path = '/' element={<FrontPageRenderHelper/>} />
+      </Routes>
+      </Router>    
+      <LogInModal modalLogInIsOpen={modalLogInIsOpen} setModalLogInIsOpen={setModalLogInIsOpen}/>
+      {/* <SignUpModal /> */}
     </div>
   );
   }
