@@ -10,7 +10,10 @@ function NavBar(
                 {modalLogInIsOpen,
                  setModalLogInIsOpen, 
                  modalSignUpIsOpen, 
-                 setModalSignUpIsOpen }) {
+                 setModalSignUpIsOpen,
+                 currentUser,
+                 setCurrentUser
+        }) {
 
 
     const [activeItem, setActiveItem] = useState('home')
@@ -20,9 +23,38 @@ function NavBar(
     }
 
     const handleLogInClick = () => {
-        // setModalLogInIsOpen(!modalLogInIsOpen);
-        setModalSignUpIsOpen(!modalSignUpIsOpen);
+        setModalLogInIsOpen(!modalLogInIsOpen);
+        // setModalSignUpIsOpen(!modalSignUpIsOpen);
     }
+
+    const handleLogOutClick = () => {
+        setCurrentUser(null)
+    }
+
+
+
+
+    const AuthButton = () => {
+        if(currentUser){
+            return (
+                <Menu.Item
+                name='Sign Out'
+                active={activeItem === 'login'}
+                onClick={()=>handleLogOutClick()}
+                />
+            )
+        } else {
+            return(
+                <Menu.Item
+                name='Sign In'
+                active={activeItem === 'login'}
+                onClick={()=>handleLogInClick()}
+    
+                />
+            )
+        }
+    }
+
 
     return (
         
@@ -44,12 +76,7 @@ function NavBar(
         />
      
         <Menu.Menu position='right'>
-            <Menu.Item
-            name='Sign In'
-            active={activeItem === 'login'}
-            onClick={()=>handleLogInClick()}
-
-            />
+            <AuthButton />
         </Menu.Menu>
         </Menu>
     )

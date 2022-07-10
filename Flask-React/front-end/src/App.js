@@ -1,10 +1,10 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import NavBar from './components/Navbar';
 import {Container, Header} from 'semantic-ui-react';
 import Home from './components/Home';
 import Results from './components/Results';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import PreviousResults from './PreviousResults';
+import PreviousResults from './components/PreviousResults';
 import LogInModal from './components/LogInModal';
 import SignUpModal from './components/SignUpModal';
 
@@ -14,9 +14,6 @@ import SignUpModal from './components/SignUpModal';
 
 // Modal.setAppElement()
 function App() {
-
-
-
 
   
 
@@ -29,6 +26,18 @@ function App() {
   const [websiteChoice2, setWebsiteChoice2] = useState(null)
   const [modalLogInIsOpen, setModalLogInIsOpen] = useState(false);
   const [modalSignUpIsOpen, setModalSignUpIsOpen] = useState(false);
+
+  const [currentUser, setCurrentUser] = useState(null)
+
+  // useEffect(() => {
+  // const getUser =  'http://127.0.0.1:5000/api/v1/'
+    
+  
+ 
+  // }, [isSignedIn])
+  
+
+
 
 
   // const sites = ['BBC', 'The Guardian', 'Fox News']
@@ -63,7 +72,8 @@ function App() {
         analysisOptions={analysisOptions}
         setAnalysisValue={setAnalysisValue}
         setLoading={setLoading}
-        setNewsData={setNewsData} />
+        setNewsData={setNewsData}
+        />
       )
     }else if(loading && !newsData){
       return(
@@ -80,6 +90,8 @@ function App() {
               setWebsiteChoice1={setWebsiteChoice1}
               setWebsiteChoice2={setWebsiteChoice2}
               setAnalysisValue={setAnalysisValue}
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
 
               />
       )
@@ -97,10 +109,15 @@ function App() {
               modalLogInIsOpen={modalLogInIsOpen}
               modalSignUpIsOpen={modalSignUpIsOpen}
               setModalLogInIsOpen={setModalLogInIsOpen}
-              setModalSignUpIsOpen={setModalSignUpIsOpen}/>
+              setModalSignUpIsOpen={setModalSignUpIsOpen}
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
+              />
               
         <Routes>
-          <Route exact path='/previous-results' element={<PreviousResults/>} />
+          <Route exact path='/previous-results' element={
+              <PreviousResults currentUser={currentUser} />
+          } />
           <Route path = '/' element={<FrontPageRenderHelper/>} />
       </Routes>
       </Container>
@@ -110,6 +127,8 @@ function App() {
            setModalLogInIsOpen={setModalLogInIsOpen}
            modalSignUpIsOpen={modalSignUpIsOpen}
            setModalSignUpIsOpen={setModalSignUpIsOpen}
+           currentUser={currentUser}
+           setCurrentUser={setCurrentUser}
            />
       <SignUpModal 
           modalLogInIsOpen={modalLogInIsOpen} 

@@ -17,9 +17,13 @@ const Results = (
                  setAnalysisValue, 
                  setWebsiteChoice, 
                  setWebsiteChoice1, 
-                 setWebsiteChoice2}) => {
+                 setWebsiteChoice2,
+                 currentUser,
+                 setCurrentUser}) => {
 
     const [value, setValue] = useState('table');
+    const [saved, setSaved] = useState(false);
+
 
     const goBackEventHandler = () => {
         setNewsData(null)
@@ -49,6 +53,48 @@ const Results = (
 
     const handleChange = (event, {value}) => setValue(value);
 
+    const postResultData = () => {
+
+        
+    
+        const postDataUrl = 'http://127.0.0.1:5000/api/v1/add_word_frequency'
+
+        const accessToken = 'Bearer ' + currentUser['access_token']
+
+
+        const reqOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': accessToken
+            },
+             body: JSON.stringify({
+                    'word_frequencies': newsData,
+                    'website': websiteChoice
+                })
+        }
+
+        fetch(postDataUrl, reqOptions)
+            .then(res => res)
+            .then(data => {
+                setSaved(true)
+            })
+
+    }
+
+
+
+    const SaveElement = () => {
+        if(saved){
+            return <p>Result saved!</p>
+        } else{
+            return <Button onClick={()=> postResultData()}>Save Result</Button>
+        }
+    }
+
+
+
+    
     return (
         <Container>
             <Header as='h2'>Word Frequency website results from the front page of {sites[websiteChoice]} </Header>
@@ -96,7 +142,7 @@ const Results = (
             <RenderResultView/>
             <Container>
             <Button onClick={()=> goBackEventHandler()}>Go Back</Button>
-            <Button >Save Result</Button>
+            <SaveElement />
             </Container>
         </Container>
     )

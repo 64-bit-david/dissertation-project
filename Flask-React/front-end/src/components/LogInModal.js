@@ -7,7 +7,9 @@ const LogInModal = (
                     {modalLogInIsOpen,
                      setModalLogInIsOpen, 
                      modalSignUpIsOpen, 
-                     setModalSignUpIsOpen }) => {
+                     setModalSignUpIsOpen,
+                     currentUser,
+                     setCurrentUser }) => {
 
 
 
@@ -16,6 +18,8 @@ const LogInModal = (
 
   const [loginUsername, setLoginUsername] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  const [loadingLogIn, setLoadingLogIn] = useState(false)
+
 
 
 
@@ -31,6 +35,33 @@ const LogInModal = (
     setLoginPassword(e.target.value)
   }
 
+
+  const handleLogInSubmit = () => {
+    const loginUrl = 'http://127.0.0.1:5000/api/v1/auth/login'
+
+
+    const reqOptions = {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        'username': loginUsername,
+        'password': loginPassword
+      })
+    }
+
+    setLoadingLogIn(true)
+
+    fetch(loginUrl, reqOptions)
+      .then(res => res.json())
+      .then(data => {
+        setCurrentUser(data.user)
+        setLoadingLogIn(false)
+        setModalLogInIsOpen(false)
+      })
+
+  }
+
+ 
 
   return (
     <Modal
@@ -72,7 +103,9 @@ const LogInModal = (
           inverted color='blue'
           // size='big'
           // labelPosition='right'
-          onClick={() => setModalLogInIsOpen(false)}
+          // onClick={() => setModalLogInIsOpen(false)}
+          onClick={() => handleLogInSubmit()}
+
           
         />
       </Form>

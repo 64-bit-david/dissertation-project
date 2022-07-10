@@ -49,6 +49,7 @@ def get_word_freq():
 @routes.post('/add_word_frequency')
 @jwt_required()
 def add_frequency():
+    print('INCOMING POST WF ')
     current_user = get_jwt_identity()
     word_frequencies = str(request.json['word_frequencies'])
     website = request.json['website']
@@ -76,16 +77,11 @@ def get_frequencies():
 
     
 
-
-
-    
-
 @routes.get('/test_auth')
-# @jwt_required()
+@jwt_required()
 def test_auth():
     user = get_jwt_identity()
-    print(user)
-    return 'secret '
+    return user
 
 
 # Auth Routes
@@ -93,10 +89,9 @@ def test_auth():
 @auth.post('/sign_up')
 def sign_up():
     username=request.json['username']
-    email=request.json['email']
     password=request.json['password']
 
-    user = User(username=username, email=email, password=password)
+    user = User(username=username, password=password)
     db.session.add(user)
     db.session.commit()
 
@@ -105,6 +100,8 @@ def sign_up():
 
 @auth.post('/login')
 def login():
+    print('=================================')
+    print(request.json)
     username=request.json['username']
     password=request.json['password']
 
@@ -119,8 +116,7 @@ def login():
                  'user':{
                     'access_token': access_token,
                     'refresh-token': refresh_token,
-                    'username':user.username,
-                    'email': user.email
+                    'username':user.username
                 }
             })
     
