@@ -1,6 +1,7 @@
 
 import { Container, Header, Button } from "semantic-ui-react"
 import DropDown from "./DropDown"
+import axios from '../api/axios'
 
 const Home = ({websiteChoice, 
               websiteChoice1, 
@@ -17,26 +18,29 @@ const Home = ({websiteChoice,
 
 
 
-  const flaskHome =  'http://127.0.0.1:5000/api/v1/word_frequency'
 
 
   const getHeadlineWordFreqs = () => {
+    let queryParams = ''
     setLoading(true)
-    let url= flaskHome
     if(analysisValue == 'wf'){
-      url += '?websites=' + websiteChoice
+      queryParams += '?websites=' + websiteChoice
     }
     else if(analysisValue == 'wfc'){
-      url += '?websites=' + websiteChoice1 + '&websites=' + websiteChoice2
+      queryParams += '?websites=' + websiteChoice1 + '&websites=' + websiteChoice2
     }
   
-    fetch(url).then(res => {
-        return res.json()
-    }).then(data => {
+    axios.get('/word_frequency' + queryParams )
+      .then(res => {
+        return res.data
+      })
+      .then(data => {
+        console.log('SHOULD FOOKIN CHANGE')
         setLoading(false)
         setNewsData(data)
-    })}  
+      })
 
+    }
 
   const DropDownWebsites = () =>{ 
     if(analysisValue==='wf'){

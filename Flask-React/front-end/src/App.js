@@ -7,6 +7,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PreviousResults from './components/PreviousResults';
 import LogInModal from './components/LogInModal';
 import SignUpModal from './components/SignUpModal';
+import axios from './api/axios'
+
 
 
 
@@ -37,7 +39,12 @@ function App() {
   // }, [isSignedIn])
   
 
+  // useEffect(() => {
+  //   let isMounted = true;
+  //   const controller = new AbortController();
 
+    
+  // })
 
 
   // const sites = ['BBC', 'The Guardian', 'Fox News']

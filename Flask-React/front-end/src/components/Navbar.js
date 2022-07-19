@@ -33,7 +33,7 @@ function NavBar(
 
 
 
-
+    
     const AuthButton = () => {
         if(currentUser){
             return (
@@ -55,6 +55,21 @@ function NavBar(
         }
     }
 
+    const PreviousResults = () => {
+        if(currentUser){
+            return(
+                <Menu.Item
+                    name='Previous Results'
+                    as={Link}
+                    to='/previous-results'
+                    active={activeItem === 'previousResults'}
+                    onClick={()=>handleItemClick('previousResults')}
+
+                 />
+            )
+        }
+    }
+
 
     return (
         
@@ -66,15 +81,8 @@ function NavBar(
             active={activeItem === 'home'}
             onClick={()=>handleItemClick('home')}
         />
-        <Menu.Item
-            name='Previous Results'
-            as={Link}
-            to='/previous-results'
-            active={activeItem === 'previousResults'}
-            onClick={()=>handleItemClick('previousResults')}
-
-        />
-     
+        
+        <PreviousResults/>
         <Menu.Menu position='right'>
             <AuthButton />
         </Menu.Menu>
