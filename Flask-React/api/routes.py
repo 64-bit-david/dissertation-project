@@ -36,6 +36,7 @@ def get_word_freq():
 
             
     res = requests.get(az_func_url)
+    print(res.text)
     return Response(
         res.text,
         status=res.status_code,
@@ -51,9 +52,28 @@ def get_word_freq():
 def add_frequency():
     print('INCOMING POST WF ')
     current_user = get_jwt_identity()
-    word_frequencies = str(request.json['word_frequencies'])
-    website = request.json['website']
-    w_f = Word_Frequency(user_id=current_user, wordCount=word_frequencies, website=website, updated_at=datetime.utcnow())
+    word_frequencies_1 = str(request.json['word_frequencies_1'])
+    website_1 = request.json['website_1']
+    word_frequencies_2 = None
+    website_2 = None
+    word_frequencies_3 = None
+    website_3 = None
+    print(request.json)
+    if 'word_frequencies_2' in request.json: 
+        word_frequencies_2 = str(request.json['word_frequencies_2'])
+        website_2 = request.json['website_2']
+    if 'word_frequencies_3' in request.json:
+        word_frequencies_3 = str(request.json['word_frequencies_3'])
+        website_3 = request.json['website_3']
+    w_f = Word_Frequency(user_id=current_user, 
+                         word_count_1=word_frequencies_1, 
+                         website_1=website_1, 
+                         updated_at=datetime.utcnow(),
+                         website_2=website_2,
+                         word_count_2=word_frequencies_2,
+                         website_3=website_3,
+                         word_count_3=word_frequencies_3)
+
     db.session.add(w_f)
     db.session.commit()
     print('word frequency data saved')

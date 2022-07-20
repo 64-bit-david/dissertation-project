@@ -13,7 +13,12 @@ class User(db.Model):
 class Word_Frequency(db.Model):
     __tablename__ = 'wordfrequency'
     id = db.Column(db.Integer, primary_key=True)
+    compare_id = db.Column(db.Integer)
     user_id=db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-    website=db.Column(db.Text)
-    wordCount = db.Column(db.Text, nullable=True)
+    website_1=db.Column(db.Text)
+    word_count_1 = db.Column(db.Text, nullable=True)
     updated_at=db.Column(db.DateTime)
+    website_2=db.Column(db.Text)
+    word_count_2 = db.Column(db.Text, nullable=True)
+    website_3=db.Column(db.Text)
+    word_count_3 = db.Column(db.Text, nullable=True)
