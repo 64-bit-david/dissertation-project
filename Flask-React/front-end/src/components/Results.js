@@ -10,14 +10,18 @@ import ResultPie from './ResultPie';
 
 
 const Results = (
-                {newsData, 
+                {newsData,
                  setNewsData, 
-                 websiteChoice, 
+                 websiteChoice,
+                 websiteChoice1, 
+                 websiteChoice2, 
+                 websiteChoice3, 
                  sites, 
                  setAnalysisValue, 
                  setWebsiteChoice, 
                  setWebsiteChoice1, 
                  setWebsiteChoice2,
+                 setWebsiteChoice3,
                  currentUser,
                  setCurrentUser}) => {
 
@@ -31,23 +35,56 @@ const Results = (
         setWebsiteChoice(null)
         setWebsiteChoice1(null)
         setWebsiteChoice2(null)
+        setWebsiteChoice3(null)
         setNewsData(null)
-        
     }
 
 
     const RenderResultView = () => {
         if (value == 'table'){
-            return <ResultTable newsData={newsData}/>
+            
+            if(websiteChoice){
+                return <ResultTable newsData={newsData}/>
+            }else if(websiteChoice1 && websiteChoice2){
+                return(
+                <>
+                    <ResultTable newsData={newsData[websiteChoice1]}/>
+                    <ResultTable newsData={newsData[websiteChoice2]}/>
+                </>);
+            }
         }
         if (value == 'wordcloud'){
+            if (websiteChoice){
             return <ResultWordCloud newsData={newsData}/>
+            } else if(websiteChoice1 && websiteChoice2){
+                return(
+                    <>
+                        <ResultWordCloud newsData={newsData[websiteChoice1]}/>
+                        <ResultWordCloud newsData={newsData[websiteChoice2]}/>
+                    </>);
+            }
         }
         if (value == 'bar'){
-            return <ResultBar newsData={newsData}/>
+            if (websiteChoice){
+                return <ResultBar newsData={newsData}/>
+                } else if(websiteChoice1 && websiteChoice2){
+                    return(
+                        <>
+                            <ResultBar newsData={newsData[websiteChoice1]}/>
+                            <ResultBar newsData={newsData[websiteChoice2]}/>
+                        </>);
+                }
         }
         if (value == 'pie'){
-            return <ResultPie newsData={newsData}/>
+            if (websiteChoice){
+                return <ResultPie newsData={newsData}/>
+                } else if(websiteChoice1 && websiteChoice2){
+                    return(
+                        <>
+                            <ResultPie newsData={newsData[websiteChoice1]}/>
+                            <ResultPie newsData={newsData[websiteChoice2]}/>
+                        </>);
+                }
         }
     }
 
@@ -55,12 +92,29 @@ const Results = (
 
     const postResultData = () => {
 
-        
+        const createReqBody = () => {
+            const body = {}
+            if(websiteChoice){
+                body['word_frequencies_1'] = newsData
+                body['website_1'] = websiteChoice
+            }else if(websiteChoice1 && websiteChoice2){
+                    body['word_frequencies_1'] = newsData[websiteChoice1]
+                    body['website_1'] = websiteChoice1
+                    body['word_frequencies_2'] = newsData[websiteChoice2]
+                    body['website_2'] = websiteChoice2
+            }else if(websiteChoice1 && websiteChoice2 & websiteChoice3){
+                body['word_frequencies_1'] = newsData[websiteChoice1]
+                body['website_1'] = websiteChoice1
+                body['word_frequencies_2'] = newsData[websiteChoice2]
+                body['website_2'] = websiteChoice2
+                body['word_frequencies_3'] = newsData[websiteChoice3]
+                body['website_3'] = websiteChoice3
+            }
+            return body
+        }
     
         const postDataUrl = 'http://127.0.0.1:5000/api/v1/add_word_frequency'
-
         const accessToken = 'Bearer ' + currentUser['access_token']
-
 
         const reqOptions = {
             method: 'POST',
@@ -68,10 +122,7 @@ const Results = (
                 'Content-Type': 'application/json',
                 'Authorization': accessToken
             },
-             body: JSON.stringify({
-                    'word_frequencies': newsData,
-                    'website': websiteChoice
-                })
+             body: JSON.stringify(createReqBody())
         }
 
         fetch(postDataUrl, reqOptions)
@@ -79,6 +130,7 @@ const Results = (
             .then(data => {
                 setSaved(true)
             })
+
 
     }
 

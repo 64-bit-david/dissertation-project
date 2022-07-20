@@ -24,24 +24,6 @@ import { Container } from 'semantic-ui-react';
 const ResultPie = ({newsData}) => {
 
     const [pieData, setPieData] = useState([])
-    // const [width, height] = useWindowSize();
-
-    // useEffect(() => {
-    //   if(newsData){
-    //     setPieData(newsData)
-    //   }
-
-    // }, [newsData])
-    
-
-    // useEffect(() => {
-    //     if(newsData){
-            
-
-    //     }
-
-    // }, [pieData])
-
     
 
     const newData = newsData.map(item => ({angle: item.count, label: item.value}))

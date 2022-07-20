@@ -5,14 +5,16 @@ import axios from '../api/axios'
 
 const Home = ({websiteChoice, 
               websiteChoice1, 
-              websiteChoice2, 
+              websiteChoice2,
+              websiteChoice3, 
               setWebsiteChoice, 
               setWebsiteChoice1, 
               setWebsiteChoice2, 
+              setWebsiteChoice3,
               analysisValue, 
               websitesOptions, 
               analysisOptions,
-              setNewsData, 
+              setNewsData,
               setLoading,
               setAnalysisValue}) => {
 
@@ -23,11 +25,14 @@ const Home = ({websiteChoice,
   const getHeadlineWordFreqs = () => {
     let queryParams = ''
     setLoading(true)
-    if(analysisValue == 'wf'){
+    if(websiteChoice){
       queryParams += '?websites=' + websiteChoice
     }
-    else if(analysisValue == 'wfc'){
+    else if(websiteChoice1){
       queryParams += '?websites=' + websiteChoice1 + '&websites=' + websiteChoice2
+      if(websiteChoice3){
+        queryParams += '&websites=' + websiteChoice3
+      }
     }
   
     axios.get('/word_frequency' + queryParams )
@@ -35,8 +40,8 @@ const Home = ({websiteChoice,
         return res.data
       })
       .then(data => {
-        console.log('SHOULD FOOKIN CHANGE')
         setLoading(false)
+        console.log(data)
         setNewsData(data)
       })
 

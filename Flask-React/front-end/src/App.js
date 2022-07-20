@@ -20,12 +20,17 @@ function App() {
   
 
   const [newsData, setNewsData] = useState(null)
+  const [newsData1, setNewsData1] = useState(null)
+  const [newsData2, setNewsData2] = useState(null)
+  const [newsData3, setNewsData3] = useState(null)
+
   const [loading, setLoading] = useState(false)
   // const [error, setError] = useState(null)
   const[analysisValue, setAnalysisValue] = useState(null)
   const [websiteChoice, setWebsiteChoice] = useState(null)
   const [websiteChoice1, setWebsiteChoice1] = useState(null)
   const [websiteChoice2, setWebsiteChoice2] = useState(null)
+  const [websiteChoice3, setWebsiteChoice3] = useState(null)
   const [modalLogInIsOpen, setModalLogInIsOpen] = useState(false);
   const [modalSignUpIsOpen, setModalSignUpIsOpen] = useState(false);
 
@@ -72,14 +77,20 @@ function App() {
         websiteChoice={websiteChoice}
         websiteChoice1={websiteChoice1}
         websiteChoice2={websiteChoice2}
+        websiteChoice3={websiteChoice3}
         setWebsiteChoice={setWebsiteChoice}
         setWebsiteChoice1={setWebsiteChoice1}
         setWebsiteChoice2={setWebsiteChoice2}
+        setWebsiteChoice3={setWebsiteChoice3}
         websitesOptions={websitesOptions}
         analysisOptions={analysisOptions}
         setAnalysisValue={setAnalysisValue}
         setLoading={setLoading}
         setNewsData={setNewsData}
+        setNewsData1={setNewsData1}
+        setNewsData2={setNewsData2}
+        setNewsData3={setNewsData3}
+        
         />
       )
     }else if(loading && !newsData){
@@ -89,17 +100,26 @@ function App() {
     }else{
       return(
         <Results 
-              newsData={newsData} 
-              websiteChoice={websiteChoice} 
+              newsData={newsData}
+              newsData1={newsData1} 
+              newsData2={newsData2} 
+              newsData3={newsData3} 
+              websiteChoice={websiteChoice}
+              websiteChoice1={websiteChoice1} 
+              websiteChoice2={websiteChoice2} 
+              websiteChoice3={websiteChoice3} 
               sites={sites} 
               setNewsData={setNewsData}
+              setNewsData1={setNewsData1}
+              setNewsData2={setNewsData2}
+              setNewsData3={setNewsData3}
               setWebsiteChoice={setWebsiteChoice}
               setWebsiteChoice1={setWebsiteChoice1}
               setWebsiteChoice2={setWebsiteChoice2}
+              setWebsiteChoice3={setWebsiteChoice3}
               setAnalysisValue={setAnalysisValue}
               currentUser={currentUser}
               setCurrentUser={setCurrentUser}
-
               />
       )
     }
