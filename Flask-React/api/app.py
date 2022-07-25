@@ -1,4 +1,5 @@
 import os
+import bcrypt
 from flask import Flask
 from models import db
 import time
@@ -31,7 +32,6 @@ def create_app(test_config:dict = {}):
     app.config['JWT_SECRET_KEY']=os.environ.get('JWT_SECRET_KEY')
     app.config["JWT_ALGORITHM"] = "HS256"
     
-
    
     if len(test_config) > 0:
         app.config.update(test_config)
