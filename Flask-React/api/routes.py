@@ -17,7 +17,7 @@ auth=Blueprint('auth', __name__, url_prefix='/api/v1/auth')
 
 @routes.get('/')
 def get_all():
-    return jsonify(news_sites.sites)    
+    return make_response(jsonify({'data': news_sites.sites}), 200)    
 
 
 @routes.get('/word_frequency')
@@ -133,15 +133,19 @@ def sign_up():
     try: 
         username=request.json['username']
         password=request.json['password']
-        hash_pass = generate_password_hash(password, 'sha256')
-
-        user = User(username=username, hashed_password=hash_pass)
+        confirm_pass = request.json['confirm_password']
+        if password != confirm_pass:
+            return make_response(jsonify({'error': 'passwords do not match'}))
+        # hash_pass = generate_password_hash(password, 'sha256')
+        user = User(username, password)
         db.session.add(user)
         db.session.commit()
+        return make_response(jsonify({'msg': "Account created successfully"}), 201)
 
-        return 'user created successfully'
     except:
-        return jsonify({'error': 'Provided credentials incorrect'})
+        return make_response(jsonify({'error': "Internal server error. Something went wrong..."}), 500)
+
+
 
 
 
@@ -158,7 +162,7 @@ def login():
     user = User.query.filter_by(username=username).first()
 
     if user:
-        if check_password_hash(user.hashed_password, password):
+        if user.password_match(password):
             access_token = create_access_token(identity=user.id)
             refresh_token = create_refresh_token(identity=user.id)
             print("user logged in successfully")
