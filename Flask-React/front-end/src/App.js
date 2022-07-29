@@ -33,6 +33,7 @@ function App() {
   const [websiteChoice3, setWebsiteChoice3] = useState(null)
   const [modalLogInIsOpen, setModalLogInIsOpen] = useState(false);
   const [modalSignUpIsOpen, setModalSignUpIsOpen] = useState(false);
+  const[isSavedResult, setIsSavedResult] = useState(false);
 
   const [currentUser, setCurrentUser] = useState(null)
 
@@ -90,7 +91,6 @@ function App() {
         setNewsData1={setNewsData1}
         setNewsData2={setNewsData2}
         setNewsData3={setNewsData3}
-        
         />
       )
     }else if(loading && !newsData){
@@ -101,25 +101,19 @@ function App() {
       return(
         <Results 
               newsData={newsData}
-              newsData1={newsData1} 
-              newsData2={newsData2} 
-              newsData3={newsData3} 
-              websiteChoice={websiteChoice}
               websiteChoice1={websiteChoice1} 
               websiteChoice2={websiteChoice2} 
               websiteChoice3={websiteChoice3} 
               sites={sites} 
               setNewsData={setNewsData}
-              setNewsData1={setNewsData1}
-              setNewsData2={setNewsData2}
-              setNewsData3={setNewsData3}
-              setWebsiteChoice={setWebsiteChoice}
               setWebsiteChoice1={setWebsiteChoice1}
               setWebsiteChoice2={setWebsiteChoice2}
               setWebsiteChoice3={setWebsiteChoice3}
               setAnalysisValue={setAnalysisValue}
               currentUser={currentUser}
               setCurrentUser={setCurrentUser}
+              isSavedResult={isSavedResult}
+              setIsSavedResult={setIsSavedResult}
               />
       )
     }
@@ -143,7 +137,14 @@ function App() {
               
         <Routes>
           <Route exact path='/previous-results' element={
-              <PreviousResults currentUser={currentUser} />
+              <PreviousResults 
+                    currentUser={currentUser}
+                    isSavedResult={isSavedResult} 
+                    setIsSavedResult={setIsSavedResult}
+                    newsData={newsData}
+                    setNewsData={setNewsData}
+                   
+                    />
           } />
           <Route path = '/' element={<FrontPageRenderHelper/>} />
       </Routes>

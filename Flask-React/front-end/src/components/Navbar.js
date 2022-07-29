@@ -32,8 +32,6 @@ function NavBar(
     }
 
 
-
-    
     const AuthButton = () => {
         if(currentUser){
             return (

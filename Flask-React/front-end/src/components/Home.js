@@ -25,18 +25,19 @@ const Home = ({websiteChoice,
   const getHeadlineWordFreqs = () => {
     let queryParams = ''
     setLoading(true)
-    if(websiteChoice){
-      queryParams += '?websites=' + websiteChoice
+    if(!websiteChoice2 && !websiteChoice3){
+      queryParams += '?websites=' + websiteChoice1
     }
-    else if(websiteChoice1){
+    else{
       queryParams += '?websites=' + websiteChoice1 + '&websites=' + websiteChoice2
       if(websiteChoice3){
         queryParams += '&websites=' + websiteChoice3
-      }
+      } 
     }
   
     axios.get('/word_frequency' + queryParams )
       .then(res => {
+        console.log(res)
         return res.data
       })
       .then(data => {
@@ -44,25 +45,27 @@ const Home = ({websiteChoice,
         console.log(data)
         setNewsData(data)
       })
+      .catch(err => {
+        console.log(err.message)
+      })
 
     }
 
   const DropDownWebsites = () =>{ 
     if(analysisValue==='wf'){
-      setWebsiteChoice1(null)
       setWebsiteChoice2(null)
+      setWebsiteChoice3(null)
       return(
       <Container style={{ marginTop: '1em' }}>
         <p>Select a website to find the most frequently used words in their headlines at this moment</p>
           <DropDown
               selectOptions={websitesOptions} 
-              selectValue={websiteChoice}
-              setSelectValue={setWebsiteChoice}
+              selectValue={websiteChoice1}
+              setSelectValue={setWebsiteChoice1}
           />
         </Container>
       )
     }else if(analysisValue === 'wfc'){
-      setWebsiteChoice(null)
       return (
         <Container>
           <div style={{ marginTop: '1em 0' }}>
@@ -80,6 +83,7 @@ const Home = ({websiteChoice,
                 selectValue={websiteChoice2}
                 setSelectValue={setWebsiteChoice2}
             />
+            {/* Need a button here to optionally render third drop down! */}
           </div>
         </Container>
     )}
@@ -95,10 +99,10 @@ const Home = ({websiteChoice,
             selectValue={analysisValue}
             setSelectValue={setAnalysisValue} />
           </Container>
-    <DropDownWebsites />
-    <Container style={{ margin:'2em 0' }} textAlign='center'>
+          <DropDownWebsites />
+          <Container style={{ margin:'2em 0' }} textAlign='center'>
           <Button content='Start Analysis' primary onClick={() => getHeadlineWordFreqs()} textAlign='center'/>
-    </Container>
+          </Container>
     </>
   )
 
