@@ -18,19 +18,20 @@ class User(db.Model):
 
 
     def password_match(self, password):
-        self.hashed_password = check_password_hash(password)
+        return check_password_hash(self.hashed_password, password)
         
 
 
 class Word_Frequency(db.Model):
     __tablename__ = 'wordfrequency'
     id = db.Column(db.Integer, primary_key=True)
-    compare_id = db.Column(db.Integer)
     user_id=db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     website_1=db.Column(db.Text)
-    word_count_1 = db.Column(db.Text, nullable=True)
+    word_count_1 = db.Column(db.JSON, nullable=True)
     updated_at=db.Column(db.DateTime)
     website_2=db.Column(db.Text)
-    word_count_2 = db.Column(db.Text, nullable=True)
+    word_count_2 = db.Column(db.JSON, nullable=True)
     website_3=db.Column(db.Text)
-    word_count_3 = db.Column(db.Text, nullable=True)
+    word_count_3 = db.Column(db.JSON, nullable=True)
+
+

@@ -1,5 +1,4 @@
 import json
-from re import L
 from flask import Blueprint, jsonify, request, Response, make_response
 import requests
 import os
@@ -8,6 +7,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token, get_jw
 from datetime import datetime
 from constants import news_sites
 from werkzeug.security import generate_password_hash, check_password_hash
+import ast
 
 
 routes=Blueprint('/', __name__, url_prefix='/api/v1')
@@ -95,6 +95,21 @@ def add_frequency():
         return make_response(jsonify({'error': "Internal server error. Something went wrong..."}), 500)
 
         
+@routes.delete('/result/<int:result_id>')
+@jwt_required()
+def delete_word_frequency(result_id):
+    try: 
+        result = Word_Frequency.query.filter_by(id=result_id).first()
+        if not result:
+            return make_response(jsonify({'error': "Error: Resource not found"}), 404)
+        if result.user_id != get_jwt_identity():
+            return make_response(jsonify({'error': "Error: Not authorized to delete this result"}), 401)
+        db.session.delete(result)
+        db.session.commit()
+        return make_response(jsonify({'msg': 'Result deleted successfully'}), 201)
+    except:
+        return make_response(jsonify({'error': "Internal server error. Something went wrong..."}), 500)
+
 
 
 @routes.get('/get_word_frequencies')
@@ -105,11 +120,12 @@ def get_frequencies():
         user_wf_items = Word_Frequency.query.filter_by(user_id=current_user).all()
         res_data = []
         for item in user_wf_items:
+            print(item.website_2)
             results_type = ''
-            if item.website_2:
-                results_type = 'wfc'
-            else:
+            if item.website_2 == None:
                 results_type = 'wf'
+            else:
+                results_type = 'wfc'
             res_item = {'id':item.id, 'created_at':item.updated_at, 'results_type':results_type}
             res_data.append(res_item)
         return make_response(jsonify({'results': res_data})), 200
@@ -130,26 +146,47 @@ def test_auth():
 
 @auth.post('/sign-up')
 def sign_up():
-    try: 
-        username=request.json['username']
-        password=request.json['password']
-        confirm_pass = request.json['confirm_password']
-        if password != confirm_pass:
-            return make_response(jsonify({'error': 'passwords do not match'}))
-        # hash_pass = generate_password_hash(password, 'sha256')
-        user = User(username, password)
-        db.session.add(user)
-        db.session.commit()
-        return make_response(jsonify({'msg': "Account created successfully"}), 201)
+    # try: 
+    username=request.json['username']
+    password=request.json['password']
+    confirm_pass = request.json['confirm_password']
+    if password != confirm_pass:
+        return make_response(jsonify({'error': 'passwords do not match'}))
+    # hash_pass = generate_password_hash(password, 'sha256')
+    user = User(username, password)
+    db.session.add(user)
+    db.session.commit()
+    return make_response(jsonify({'msg': "Account created successfully"}), 201)
 
-    except:
-        return make_response(jsonify({'error': "Internal server error. Something went wrong..."}), 500)
-
-
+    # except:
+    #     return make_response(jsonify({'error': "Internal server error. Something went wrong..."}), 500)
 
 
 
-@auth.get('/login')
+
+@routes.get('/result/<int:result_id>')
+@jwt_required()
+def get_saved_word_frequency(result_id):
+    wf = Word_Frequency.query.filter_by(id=result_id).first()
+    wf_list_1 = ast.literal_eval(wf.word_count_1)
+    res_data = {wf.website_1: wf_list_1}  
+    if wf.website_2:
+        wf_list_2 = ast.literal_eval(wf.word_count_2)
+        res_data[wf.website_2] = wf_list_2
+
+    if wf.website_3:
+        wf_list_3 = ast.literal_eval(wf.word_count_3)
+        res_data[wf.website_3] = wf_list_3
+
+    # print(res_data)
+    # print(type(r2['bbc']))
+    return make_response(jsonify(res_data), 200)
+
+
+
+
+
+@auth.post('/login')
 def login():
     print('=================================')
     print(request.json)

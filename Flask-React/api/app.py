@@ -1,8 +1,6 @@
 import os
-import bcrypt
 from flask import Flask
 from models import db
-import time
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
