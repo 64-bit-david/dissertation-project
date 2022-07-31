@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import NavBar from './components/Navbar';
-import {Container, Header} from 'semantic-ui-react';
+import {Container, Header, Loader} from 'semantic-ui-react';
 import Home from './components/Home';
 import Results from './components/Results';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -95,7 +95,7 @@ function App() {
       )
     }else if(loading && !newsData){
       return(
-        <Header>Loading...</Header>
+        <Loader active>Gathering Your Data</Loader>
       )
     }else{
       return(

@@ -1,11 +1,12 @@
 import React from 'react'
-import {Table, TableBody} from 'semantic-ui-react'
+import {Table, TableBody, Header} from 'semantic-ui-react'
 
-const ResultTable = ({newsData}) => {
+const ResultTable = ({newsData, website}) => {
 
 
   return (
     <div>
+      <Header as='h3' textAlign='center'>Word Frequency Results for {website}</Header>
       <Table celled>
         <Table.Header>
         <Table.Row>

@@ -6,6 +6,7 @@ import ResultBar from './ResultBar';
 import ResultPie from './ResultPie';
 import ConfirmModal from './ConfirmModal';
 import axios from '../api/axios'
+import DropDown from './DropDown';
 
 
 
@@ -27,7 +28,10 @@ const Results = (
                  deleteId,
                  setDeleteId,
                  userResults,
-                 setUserResults
+                 setUserResults,
+                 websitesOptions,
+                 selectValue,
+                 setSelectValue
             }) => {
 
 
@@ -36,6 +40,15 @@ const Results = (
     const[deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
     const[deleteSuccess, setDeleteSuccess] = useState(false)
     const [closeFromModal, setCloseFromModal] = useState(false)
+    const [resultTypeValue, setResultTypeValue] = useState('bar')
+
+    const resultOptions = [
+    {key: 'table', value:'table', text: 'Table'},
+    {key: 'cloud', value:'cloud', text: 'Word Cloud'},
+    {key: 'bar', value:'bar', text: 'Bar Chart'},
+    {key: 'pie', value:'pie', text: 'Pie Chart'},
+
+    ]
 
 
 
@@ -70,80 +83,92 @@ const Results = (
       }
 
     const RenderResultView = () => {
-        if (value == 'table'){
+        if (resultTypeValue == 'table'){
             if(websiteChoice3){
                 return(
                     <>
-                        <ResultTable newsData={newsData[websiteChoice1]}/>
-                        <ResultTable newsData={newsData[websiteChoice2]}/>
-                        <ResultTable newsData={newsData[websiteChoice3]}/>
+                        <ResultTable newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]} />
+                        <br/>
+                        <ResultTable newsData={newsData[websiteChoice2]} website={sites[websiteChoice2]}/>
+                        <br/>
+                        <ResultTable newsData={newsData[websiteChoice3]} website={sites[websiteChoice3]}/>
 
                     </>);
             }else if(websiteChoice2){
                 return(
                 <>
-                    <ResultTable newsData={newsData[websiteChoice1]}/>
-                    <ResultTable newsData={newsData[websiteChoice2]}/>
+                    <ResultTable newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
+                    <br/>
+                    <ResultTable newsData={newsData[websiteChoice2]} website={sites[websiteChoice2]}/>
                 </>);
             }else{
-                return   <ResultTable newsData={newsData[websiteChoice1]}/>
+                return   <ResultTable newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
             } 
         }
-        if (value == 'wordcloud'){
+        if (resultTypeValue == 'cloud'){
             if(websiteChoice3 ){
                 return(
                     <>
-                        <ResultWordCloud newsData={newsData[websiteChoice1]}/>
-                        <ResultWordCloud newsData={newsData[websiteChoice2]}/>
-                        <ResultWordCloud newsData={newsData[websiteChoice3]}/>
+                        <ResultWordCloud newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
+                        <br />
+                        <ResultWordCloud newsData={newsData[websiteChoice2]} website={sites[websiteChoice2]}/>
+                        <br />
+                        <ResultWordCloud newsData={newsData[websiteChoice3]} website={sites[websiteChoice3]}/>
 
                     </>);
             }else if(websiteChoice2){
                 return(
                 <>
-                    <ResultWordCloud newsData={newsData[websiteChoice1]}/>
-                    <ResultWordCloud newsData={newsData[websiteChoice2]}/>
+                    <ResultWordCloud newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
+                    <br />
+                    <ResultWordCloud newsData={newsData[websiteChoice2]} website={sites[websiteChoice2]}/>
                 </>);
             }else{
-                return   <ResultWordCloud newsData={newsData[websiteChoice1]}/>
+                return   <ResultWordCloud newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
             } 
         }
-        if (value == 'bar'){
+        if (resultTypeValue == 'bar'){
             if(websiteChoice3 ){
                 return(
                     <>
-                        <ResultBar newsData={newsData[websiteChoice1]}/>
-                        <ResultBar newsData={newsData[websiteChoice2]}/>
-                        <ResultBar newsData={newsData[websiteChoice3]}/>
+                        <ResultBar newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
+                        <br />
+                        <ResultBar newsData={newsData[websiteChoice2]} website={sites[websiteChoice2]}/>
+                        <br />
+                        <ResultBar newsData={newsData[websiteChoice3]} website={sites[websiteChoice3]}/>
 
                     </>);
             }else if(websiteChoice2){
                 return(
                 <>
-                    <ResultBar newsData={newsData[websiteChoice1]}/>
-                    <ResultBar newsData={newsData[websiteChoice2]}/>
+                    <ResultBar newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
+                    <br />
+                    <ResultBar newsData={newsData[websiteChoice2]} website={sites[websiteChoice2]}/>
                 </>);
             }else{
-                return   <ResultBar newsData={newsData[websiteChoice1]}/>
+                return   <ResultBar newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
             } 
         }
-        if (value == 'pie'){
+        if (resultTypeValue == 'pie'){
             if(websiteChoice3 ){
                 return(
                     <>
-                        <ResultPie newsData={newsData[websiteChoice1]}/>
-                        <ResultPie newsData={newsData[websiteChoice2]}/>
-                        <ResultPie newsData={newsData[websiteChoice3]}/>
+                        <ResultPie newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
+                        <br />
+                        <ResultPie newsData={newsData[websiteChoice2]} website={sites[websiteChoice2]}/>
+                        <br />
+                        <ResultPie newsData={newsData[websiteChoice3]} website={sites[websiteChoice3]}/>
 
                     </>);
             }else if(websiteChoice2){
                 return(
-                <>
-                    <ResultPie newsData={newsData[websiteChoice1]}/>
-                    <ResultPie newsData={newsData[websiteChoice2]}/>
-                </>);
+                <div style={resultPieStyle}>
+                    <ResultPie newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
+                    <br />
+                    <ResultPie newsData={newsData[websiteChoice2]} website={sites[websiteChoice2]}/>
+                </div>);
             }else{
-                return   <ResultPie newsData={newsData[websiteChoice1]}/>
+                return   <ResultPie newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
             } 
         }
     }
@@ -207,11 +232,11 @@ const Results = (
     const HeaderResults = () => {
        if(isSavedResult){
             return(
-                <Header as='h2'> Previously Saved Word Frequency Compare Results</Header>
+                <Header as='h2' textAlign='center'> Previously Saved Results</Header>
             )
        }else{
             return(
-                <Header as='h2'>Word Frequency Compare Results</Header> 
+                <Header textAlign='center' as='h2'>Results</Header> 
             )
         }
            
@@ -244,53 +269,28 @@ const Results = (
 
     
     return (
-        <Container>
+        <Container style={{margin: '5rem 0'}}>
             
-          <HeaderResults/>
-            <Form>
-                <Form.Field>
-                    Selected value: <b>{value}</b>
-                </Form.Field>
-                <Form.Field>
-                    <Radio
-                        label='Table'
-                        name='radioGroup'
-                        value='table'
-                        checked={value === 'table'}
-                        onChange={handleChange}
-                    />
-                </Form.Field>
-                <Form.Field>
-                    <Radio
-                        label='Word Cloud'
-                        name='radioGroup'
-                        value='wordcloud'
-                        checked={value === 'wordcloud'}
-                        onChange={handleChange}
-                    />
-                </Form.Field>
-                <Form.Field>
-                    <Radio
-                        label='Bar Chart'
-                        name='radioGroup'
-                        value='bar'
-                        checked={value === 'bar'}
-                        onChange={handleChange}
-                    />
-                </Form.Field>
-                <Form.Field>
-                    <Radio
-                        label='Pie Chart'
-                        name='radioGroup'
-                        value='pie'
-                        checked={value === 'pie'}
-                        onChange={handleChange}
-                    />
-                </Form.Field>
-            </Form>
+          <HeaderResults />
+          <br/>
+          <br/>
+          <div style={{display: 'flex', justifyContent:'center'}}>
+            <div style={{width: '25vw'}} textAlign='center'>
+            <DropDown
+                fluid
+                selectOptions={resultOptions} 
+                selectValue={resultTypeValue}
+                setSelectValue={setResultTypeValue}
+            />
+            </div>
+          </div>
+          <br/>
+          <br/>
+          <br/>
+
             <RenderResultView/>
-            <Container>
-            <ButtonRenderHelper/>
+            <Container style={{margin: '3rem 0'}} textAlign='center'>
+                <ButtonRenderHelper/>
             </Container>
             <ConfirmModal
                 setIsOpen={setDeleteModalIsOpen}
@@ -305,5 +305,17 @@ const Results = (
         </Container>
     )
 };
+
+
+const resultPieStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+}
+
+const resultsMargin = {
+    margin: '3rem 0'
+}
 
 export default Results;

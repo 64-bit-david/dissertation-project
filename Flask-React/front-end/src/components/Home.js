@@ -1,7 +1,7 @@
 
 import { Container, Header, Button } from "semantic-ui-react"
-import DropDown from "./DropDown"
-import axios from '../api/axios'
+import DropDown from "./DropDown";
+import axios from '../api/axios';
 
 const Home = ({websiteChoice, 
               websiteChoice1, 
@@ -19,7 +19,7 @@ const Home = ({websiteChoice,
               setAnalysisValue}) => {
 
 
-
+                console.log(websitesOptions)
 
 
   const getHeadlineWordFreqs = () => {
@@ -57,32 +57,36 @@ const Home = ({websiteChoice,
       setWebsiteChoice3(null)
       return(
       <Container style={{ marginTop: '1em' }}>
-        <p>Select a website to find the most frequently used words in their headlines at this moment</p>
-          <DropDown
-              selectOptions={websitesOptions} 
-              selectValue={websiteChoice1}
-              setSelectValue={setWebsiteChoice1}
-          />
+       <Container style={{display: 'flex', justifyContent: 'center', margin: '2rem 0'}}>
+              <p>Select a website to find the most frequently used words in their headlines at this moment</p>
+            </Container>
+        
+              <DropDown
+                  selectOptions={websitesOptions} 
+                  selectValue={websiteChoice1}
+                  setSelectValue={setWebsiteChoice1}
+                  />
         </Container>
       )
     }else if(analysisValue === 'wfc'){
       return (
         <Container>
           <div style={{ marginTop: '1em 0' }}>
-        <p>Select a website to find the most frequently used words in their headlines at this moment</p>
-
-            <DropDown
-                selectOptions={websitesOptions} 
-                selectValue={websiteChoice1}
-                setSelectValue={setWebsiteChoice1}
-                />
-          </div>
+            <Container style={{display: 'flex', justifyContent: 'center', margin: '2rem 0'}}>
+              <p>Select a website to find the most frequently used words in their headlines at this moment</p>
+            </Container>
+              <DropDown
+                  selectOptions={websitesOptions} 
+                  selectValue={websiteChoice1}
+                  setSelectValue={setWebsiteChoice1}
+                  />
           <div style={{ marginTop: '1em' }}>
-            <DropDown
-                selectOptions={websitesOptions} 
-                selectValue={websiteChoice2}
-                setSelectValue={setWebsiteChoice2}
-            />
+              <DropDown
+                  selectOptions={websitesOptions} 
+                  selectValue={websiteChoice2}
+                  setSelectValue={setWebsiteChoice2}
+                  />
+          </div>
             {/* Need a button here to optionally render third drop down! */}
           </div>
         </Container>
@@ -92,7 +96,7 @@ const Home = ({websiteChoice,
 
   return(
     <>
-        <Header as='h1'>Welcome to the NewsTrendsAnalyser</Header>
+        <Header as='h1' textAlign="center">Welcome to the NewsTrendsAnalyser</Header>
         <Container style={{ margin:'2em 0' }} textAlign='center'>
           <DropDown
             selectOptions={analysisOptions} 

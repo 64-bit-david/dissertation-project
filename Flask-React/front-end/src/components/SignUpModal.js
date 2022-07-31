@@ -20,7 +20,8 @@ const SignUpModal = (
 
 
   const handleModalSwitch = () => {
-
+    setModalLogInIsOpen(!modalLogInIsOpen)
+    setModalSignUpIsOpen(!modalSignUpIsOpen)
   }
 
   const handleSignUpUsername = (e) => {
@@ -71,7 +72,7 @@ const SignUpModal = (
           />
         </Form.Field>
         <Form.Field>
-          <label>Password</label>
+          <label>Confirm Password</label>
           <input
                style={inputStyle} 
                placeholder='Enter password..' 

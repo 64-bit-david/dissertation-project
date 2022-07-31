@@ -21,8 +21,8 @@ def database_uri() -> str:
 def create_app():
     app = Flask(__name__)
 
-    # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///nta.db'
-    app.config['SQLALCHEMY_DATABASE_URI'] = database_uri()
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///nta.db'
+    # app.config['SQLALCHEMY_DATABASE_URI'] = database_uri()
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=3)

@@ -23,8 +23,10 @@ const LogInModal = (
 
 
 
-  const handleModalSwitch = () => {
 
+  const handleModalSwitch = () => {
+    setModalLogInIsOpen(!modalLogInIsOpen)
+    setModalSignUpIsOpen(!modalSignUpIsOpen)
   }
 
   const handleLoginUsername = (e) => {

@@ -24,7 +24,10 @@ function NavBar(
 
     const handleLogInClick = () => {
         setModalLogInIsOpen(!modalLogInIsOpen);
-        // setModalSignUpIsOpen(!modalSignUpIsOpen);
+    }
+
+    const handleSignUpClick = () => {
+        setModalSignUpIsOpen(!modalSignUpIsOpen);
     }
 
     const handleLogOutClick = () => {
@@ -43,12 +46,19 @@ function NavBar(
             )
         } else {
             return(
+                <>
                 <Menu.Item
                 name='Sign In'
                 active={activeItem === 'login'}
                 onClick={()=>handleLogInClick()}
     
                 />
+                <Menu.Item
+                name='Register'
+                onClick={()=>handleSignUpClick()}
+    
+                />
+                </>
             )
         }
     }
