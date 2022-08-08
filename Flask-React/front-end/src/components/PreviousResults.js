@@ -19,6 +19,7 @@ const[isSavedResult, setIsSavedResult] = useState(false)
 const[deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
 const[deleteId, setDeleteId] = useState(null)
 const[deleteSuccess, setDeleteSuccess] = useState(false)
+const [panalysisValue, setPAnalysisValue] = useState(null)
 
 
 const resultTypeArray = {
@@ -151,6 +152,7 @@ useEffect(() => {
           </>
         )
       }else{
+        // return<h1>Data should be here</h1>
         return <Results
            currentUser={currentUser}
            newsData={pNewsData}
@@ -158,15 +160,16 @@ useEffect(() => {
            websiteChoice1={pWebSiteChoice1}
            websiteChoice2={pWebSiteChoice2}
            websiteChoice3={pWebSiteChoice3}
-           setPWebsiteChoice1={setPWebsiteChoice1}
-           setPWebsiteChoice2={setPWebsiteChoice2}
-           setPWebsiteChoice3={setPWebsiteChoice3}
+           setWebsiteChoice1={setPWebsiteChoice1}
+           setWebsiteChoice2={setPWebsiteChoice2}
+           setWebsiteChoice3={setPWebsiteChoice3}
            isSavedResult={isSavedResult}
            setIsSavedResult={setIsSavedResult}
            deleteId={deleteId}
            setDeleteId={setDeleteId}
            userResults={userResults}
            setUserResults={setUserResults}
+           setAnalysisValue={setPAnalysisValue}
            />
       }
     }

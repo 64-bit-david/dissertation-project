@@ -12,7 +12,13 @@ def created_user():
 
 @pytest.fixture(scope='module')
 def test_client():
-    flask_app = create_app()
+    test_config = {
+            'SQLALCHEMY_DATABASE_URI': "sqlite:///:memory:",
+            'TESTING': True,
+            'JWT_SECRET_KEY': 'randomsecret'
+        }
+    flask_app = create_app(test_config)
+
 
     # Create a test client using the Flask application configured for testing
     with flask_app.test_client() as testing_client:

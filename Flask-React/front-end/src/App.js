@@ -7,8 +7,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PreviousResults from './components/PreviousResults';
 import LogInModal from './components/LogInModal';
 import SignUpModal from './components/SignUpModal';
-import axios from './api/axios'
-
 
 
 
@@ -20,9 +18,6 @@ function App() {
   
 
   const [newsData, setNewsData] = useState(null)
-  const [newsData1, setNewsData1] = useState(null)
-  const [newsData2, setNewsData2] = useState(null)
-  const [newsData3, setNewsData3] = useState(null)
 
   const [loading, setLoading] = useState(false)
   // const [error, setError] = useState(null)
@@ -88,9 +83,6 @@ function App() {
         setAnalysisValue={setAnalysisValue}
         setLoading={setLoading}
         setNewsData={setNewsData}
-        setNewsData1={setNewsData1}
-        setNewsData2={setNewsData2}
-        setNewsData3={setNewsData3}
         />
       )
     }else if(loading && !newsData){
@@ -143,7 +135,6 @@ function App() {
                     setIsSavedResult={setIsSavedResult}
                     newsData={newsData}
                     setNewsData={setNewsData}
-                   
                     />
           } />
           <Route path = '/' element={<FrontPageRenderHelper/>} />

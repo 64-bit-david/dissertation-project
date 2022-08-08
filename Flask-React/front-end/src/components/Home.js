@@ -19,7 +19,7 @@ const Home = ({websiteChoice,
               setAnalysisValue}) => {
 
 
-                console.log(websitesOptions)
+             
 
 
   const getHeadlineWordFreqs = () => {
@@ -58,7 +58,7 @@ const Home = ({websiteChoice,
       return(
       <Container style={{ marginTop: '1em' }}>
        <Container style={{display: 'flex', justifyContent: 'center', margin: '2rem 0'}}>
-              <p>Select a website to find the most frequently used words in their headlines at this moment</p>
+              <Header as='h5'>Select a website to find the most frequently used words in their headlines at this moment</Header>
             </Container>
         
               <DropDown
@@ -73,7 +73,7 @@ const Home = ({websiteChoice,
         <Container>
           <div style={{ marginTop: '1em 0' }}>
             <Container style={{display: 'flex', justifyContent: 'center', margin: '2rem 0'}}>
-              <p>Select a website to find the most frequently used words in their headlines at this moment</p>
+              <Header as='h5'>Select a website to find the most frequently used words in their headlines at this moment</Header>
             </Container>
               <DropDown
                   selectOptions={websitesOptions} 
@@ -95,9 +95,10 @@ const Home = ({websiteChoice,
 
 
   return(
-    <>
+    <div style={{marginTop: '10vh'}}>
         <Header as='h1' textAlign="center">Welcome to the NewsTrendsAnalyser</Header>
-        <Container style={{ margin:'2em 0' }} textAlign='center'>
+        <Container style={{ margin:'2.5rem 0' }} textAlign='center'>
+          <Header as='h3'>Select an option to get started</Header>
           <DropDown
             selectOptions={analysisOptions} 
             selectValue={analysisValue}
@@ -107,7 +108,7 @@ const Home = ({websiteChoice,
           <Container style={{ margin:'2em 0' }} textAlign='center'>
           <Button content='Start Analysis' primary onClick={() => getHeadlineWordFreqs()} textAlign='center'/>
           </Container>
-    </>
+    </div>
   )
 
   }

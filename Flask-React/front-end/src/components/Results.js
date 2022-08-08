@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import ResultTable from './ResultTable';
-import { Form, Radio, Container, Header, Button } from 'semantic-ui-react'
+import { Form, Radio, Container, Header, Button, Icon } from 'semantic-ui-react'
 import ResultWordCloud from './ResultWordCloud';
 import ResultBar from './ResultBar';
 import ResultPie from './ResultPie';
@@ -16,7 +16,7 @@ const Results = (
                  websiteChoice1, 
                  websiteChoice2, 
                  websiteChoice3, 
-                 sites, 
+                //  sites, 
                  setAnalysisValue, 
                  setWebsiteChoice1, 
                  setWebsiteChoice2,
@@ -41,6 +41,7 @@ const Results = (
     const[deleteSuccess, setDeleteSuccess] = useState(false)
     const [closeFromModal, setCloseFromModal] = useState(false)
     const [resultTypeValue, setResultTypeValue] = useState('bar')
+    const [resultIsSaving, setResultIsSaving] = useState(false)
 
     const resultOptions = [
     {key: 'table', value:'table', text: 'Table'},
@@ -49,6 +50,8 @@ const Results = (
     {key: 'pie', value:'pie', text: 'Pie Chart'},
 
     ]
+
+    const sites = {'bbc': 'BBC', 'guardian': 'The Guardian', 'fox':'Fox News'}
 
 
 
@@ -176,7 +179,7 @@ const Results = (
     const handleChange = (event, {value}) => setValue(value);
 
     const postResultData = () => {
-
+        setResultIsSaving(true)
         const createReqBody = () => {
             const body = {}
             if(!websiteChoice2 && !websiteChoice3){
@@ -214,6 +217,7 @@ const Results = (
             .then(res => res)
             .then(data => {
                 setSaved(true)
+                setResultIsSaving(false)
             })
 
 
@@ -222,9 +226,20 @@ const Results = (
 
 
     const SaveElement = () => {
-        if(saved){
-            return <p>Result saved!</p>
-        } else{
+        if(saved && !resultIsSaving){
+            return (
+            <>
+              <Button color='green'>Result Saved!</Button>
+              <Icon
+                    name='check circle'
+                    size='large'
+                    color='green'
+                />
+            </> 
+            )
+        } else if(!saved && resultIsSaving){
+            return <Button loading primary>Saving...</Button>
+        }else{
             return <Button primary onClick={()=> postResultData()}>Save Result</Button>
         }
     }

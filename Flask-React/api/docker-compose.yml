@@ -26,4 +26,4 @@ services:
         environment:
             MARIADB_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
         volumes:
-            - ${WEBAPP_STORAGE_HOME}./data:/docker-entrypoint-initdb.d
+            - ./data:/docker-entrypoint-initdb.d

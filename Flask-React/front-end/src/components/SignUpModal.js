@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import {Modal, Button, Container, Form} from 'semantic-ui-react';
+import {Modal, Button, Container, Form, Header, Icon} from 'semantic-ui-react';
+
 
 
 
@@ -15,6 +16,8 @@ const SignUpModal = (
   const [signUpUsername, setSignUpUsername] = useState('');
   const [signUpPassword, setSignUpPassword] = useState('');
   const [signUpPasswordConfirm, setSignUpPasswordConfirm] = useState('');
+  const [signUpSuccess, setSignUpSuccess] = useState(false)
+  const [signUpError, setSignUpError] = useState(false)                    
 
 
 
@@ -22,6 +25,7 @@ const SignUpModal = (
   const handleModalSwitch = () => {
     setModalLogInIsOpen(!modalLogInIsOpen)
     setModalSignUpIsOpen(!modalSignUpIsOpen)
+    setSignUpSuccess(false)
   }
 
   const handleSignUpUsername = (e) => {
@@ -36,21 +40,42 @@ const SignUpModal = (
     setSignUpPasswordConfirm(e.target.value)
   }
 
+
+
+  const handleSignInSubmit = () => {
+    const loginUrl = 'http://127.0.0.1:5000/api/v1/auth/sign-up'
+
+
+    const reqOptions = {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        'username': signUpUsername,
+        'password': signUpPassword,
+        'confirm_password': signUpPasswordConfirm
+      })
+    }
+
+    // setLoadingSignUp(true)
+
+    fetch(loginUrl, reqOptions)
+      .then(res => res.json())
+      .then(data => {
+        // setLoadingLogIn(false)
+        setSignUpSuccess(true)
+      })
+  }
     
 
-
-  return (
-    <Modal
-      onClose={() => setModalSignUpIsOpen(false)}
-      onOpen={() => setModalSignUpIsOpen(true)}
-      open={modalSignUpIsOpen}
-      size='tiny'
-    >   
-      <Container style={modalHeaderStyles}>
+  const ModalContentHelper = () => {
+    if(!signUpError && !signUpSuccess){
+      return(
+        <>
+        <Container style={modalHeaderStyles}>
         <Modal.Header>Register</Modal.Header>
         </Container>
         <Container style={pStyle}>
-            <p>Please enter your credentials to create an account</p>
+            <Header as='h4'>Please enter your credentials to create an account</Header>
         </Container>
         <Form style={formStyle}>
         <Form.Field>
@@ -86,10 +111,10 @@ const SignUpModal = (
         <Button
           content="Register"
           inverted color='blue'
-          // size='big'
-          // labelPosition='right'
-          onClick={() => setModalSignUpIsOpen(false)}
-          
+          onClick={() => {
+            // setModalSignUpIsOpen(false)}
+            handleSignInSubmit()
+          }}
         />
       </Form>
 
@@ -102,9 +127,58 @@ const SignUpModal = (
           size='mini'
           style={{marginTop: '1rem'}}
           onClick={() => handleModalSwitch()}
-          
         />
         </Container>
+        </>
+      )
+    } else if(signUpSuccess){
+      return(
+          <Container textAlign='center' style={{margin: '3rem 0'}}>
+            <Modal.Header as='h2'>
+                Registration Successful
+            </Modal.Header>
+            <Icon
+            name='check circle'
+            size='huge'
+            color='green'
+            ></Icon>
+            <br/>
+            <br/>
+
+          <Button
+            content="Go to Sign In"
+            primary
+            style={{marginTop: '1rem'}}
+            onClick={() => handleModalSwitch()}
+        />
+        <br/>
+        <br/>
+
+          <Button
+            primary
+            onClick={() => {
+              setModalSignUpIsOpen(false)
+              setSignUpSuccess(false)
+            }}
+            >Close</Button>
+          </Container>
+      )
+    }
+  }
+
+
+  return (
+    <Modal
+      onClose={() => setModalSignUpIsOpen(false)}
+      onOpen={() => setModalSignUpIsOpen(true)}
+      open={modalSignUpIsOpen}
+      size='tiny'
+    >   
+  {/* Calling this functional component like so <ModalContentHelper />
+        causes a bug where the input fields lose focus after typing each letter
+        This is the easiest workaround to prevent the bug. */}
+    {ModalContentHelper()}
+      
 
 
     </Modal>
@@ -112,12 +186,7 @@ const SignUpModal = (
   )
 }
 
-const inputContainerStyles = {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-}
+
 
 const formStyle = {
   display: 'flex',
@@ -149,7 +218,7 @@ const modalBtnStyles = {
 const pStyle = {
     display: 'flex',
     justifyContent:'center',
-    marginBottom: '.5rem' 
+    marginBottom: '2rem' 
 }
 
 export default SignUpModal;

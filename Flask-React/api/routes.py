@@ -6,7 +6,6 @@ from models import User, Word_Frequency, db
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, jwt_required
 from datetime import datetime
 from constants import news_sites
-from werkzeug.security import generate_password_hash, check_password_hash
 import ast
 
 
@@ -18,6 +17,10 @@ auth=Blueprint('auth', __name__, url_prefix='/api/v1/auth')
 @routes.get('/')
 def get_all():
     return make_response(jsonify({'data': news_sites.sites}), 200)    
+
+@routes.get('/test')
+def get_test():
+    return make_response('That s that', 200)    
 
 
 @routes.get('/word_frequency')
@@ -151,8 +154,12 @@ def sign_up():
     password=request.json['password']
     confirm_pass = request.json['confirm_password']
     if password != confirm_pass:
-        return make_response(jsonify({'error': 'passwords do not match'}))
+        return make_response(jsonify({'error': 'Passwords do not match'}), 400)
     # hash_pass = generate_password_hash(password, 'sha256')
+    
+    user = User.query.filter_by(username=username).first()
+    if user:
+        return make_response(jsonify({'error': 'Username already exists'}), 400)
     user = User(username, password)
     db.session.add(user)
     db.session.commit()
@@ -194,7 +201,7 @@ def login():
     username=request.json['username']
     password=request.json['password']
     if not username or not password:
-        return make_response(jsonify({'error': 'Incorrect Parameters'}), 400)
+        return make_response(jsonify({'error': 'Incorrect parameters'}), 400)
 
     user = User.query.filter_by(username=username).first()
 
@@ -206,14 +213,15 @@ def login():
             return make_response(jsonify({
                 'user':{
                     'access_token': access_token,
-                    'refresh-token': refresh_token,
+                    'refresh_token': refresh_token,
                     'username':user.username
                 }
             }), 200)
+        else:
+            return make_response(jsonify({'error': 'Incorrect credentials'}), 401)
     else:
-        return make_response(jsonify({'error': 'Username does not exist'}))
-    
-    return jsonify({'Error': 'Provided credentials incorrect'})
+        return make_response(jsonify({'error': 'Username does not exist'}), 400)
+        
     # except: 
         # return make_response(jsonify({'error': "Internal server error. Something went wrong..."}), 500)
 
