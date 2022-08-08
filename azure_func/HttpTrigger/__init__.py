@@ -26,6 +26,7 @@ def fetch_html(url):
         file.write(page_source)
 
     chrome.quit()
+    
 
     return page_source
 
@@ -37,19 +38,7 @@ def get_header_tags(web_page_markup, site_name):
     A function that takes web page mark up and extracts headline text by given attributes
     and combines them into one string 
     """
-    soup = BeautifulSoup(web_page_markup, 'lxml')
-
-
-    # soup = soup.prettify()
-    # soup = BeautifulSoup(soup, 'lxml')
-  
-    # first attempt was to filter out what we didn't want
-        #too difficult, decided better approach is to filter in by class/id
-    # for id_key, id_value in n_sites.non_important_elements[site_name].items():
-    #     for div in soup.find_all("div", {id_key:id_value}): 
-    #         div.decompose()
-
-
+    soup = BeautifulSoup(web_page_markup, 'html.parser')
    
     stories_text = ''
     for item in news_site_scrape_data.relevant_elements[site_name]:
@@ -66,19 +55,27 @@ def get_header_tags(web_page_markup, site_name):
 
 
 
-def headline_filter(headlines):
+def headline_filter(headlines, count=0):
     """
     A function that removes stopwords from a given string of many words
     """
+
+
     stop_words = set(stopwords.words('english'))
     word_tokens = word_tokenize(headlines)
+
 
     filtered_words = ""
 
     for w in word_tokens:
         if w not in stop_words and w.isalpha() and len(w) > 2:
             filtered_words = filtered_words + w.lower() + " "
-    return filtered_words
+   
+    # Function misses a few stopwords when they contain uppercases
+    # So recursively calling it will ensure they are removed
+    if count < 1:
+        filtered_words = headline_filter(filtered_words, 1)
+    return filtered_words.strip()
 
 
 
@@ -109,25 +106,21 @@ def word_frequency(website):
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
+    
     websites = req.params['websites'].split(',')
-    print(len(websites))
+    
     if len(websites) == 1:
         print('----------------------------------------------')
         print('getting headlines from single website')
         print('----------------------------------------------')
-        words = word_frequency(websites[0])
-        result = json.dumps(words)
-        print('done')
-        return func.HttpResponse(result)
-        
     elif len(websites) > 1:
-        result = {}
         print('----------------------------------------------')
         print(f'getting headlines from {len(websites)} websites')
         print('----------------------------------------------')
-        for site in websites:
-            result[site] = word_frequency(site)
-        result = json.dumps(result)
-        print('done')
-        return func.HttpResponse(result)
-        
+    result = {}
+    for site in websites:
+        result[site] = word_frequency(site)
+    result = json.dumps(result)
+    print('done')
+    print(result)
+    return func.HttpResponse(result)

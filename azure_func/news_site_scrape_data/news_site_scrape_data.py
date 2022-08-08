@@ -4,7 +4,6 @@ relevant_elements = {
             'class styles_item__V9X_S', 
             'class smorgasbord-meta-content__content-wrapper',
             'class styles_headline__YCWl5',
-            'class styles_headline__YCWl5',
             'class styles_headline__ice3t',
             'class styles_teaseTitle__H4OWQ'],
     'bbc': ['çlass gs-c-promo-heading__title'],
