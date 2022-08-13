@@ -35,8 +35,8 @@ def fetch_html(url):
 
 def get_header_tags(web_page_markup, site_name):
     """
-    A function that takes web page mark up and extracts headline text by given attributes
-    and combines them into one string 
+    A function that takes web page mark up and extracts text based using pre-determined
+    attributes for provided site_name
     """
     soup = BeautifulSoup(web_page_markup, 'html.parser')
    
@@ -51,6 +51,7 @@ def get_header_tags(web_page_markup, site_name):
             # print(headline)
     
     return stories_text
+    
 
 
 
@@ -72,7 +73,7 @@ def headline_filter(headlines, count=0):
             filtered_words = filtered_words + w.lower() + " "
    
     # Function misses a few stopwords when they contain uppercases
-    # So recursively calling it will ensure they are removed
+    # So recursively calling it once will ensure they are removed
     if count < 1:
         filtered_words = headline_filter(filtered_words, 1)
     return filtered_words.strip()
@@ -92,7 +93,6 @@ def word_counter(text):
     return result
 
 
-
 def word_frequency(website):
     """
     A function that returns the most common words from the front page of a news website
@@ -105,10 +105,10 @@ def word_frequency(website):
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
-
-    
+    # try:
+    if 'websites' not in req.params:
+        return func.HttpResponse("Error: Request to function must contain URL query param to website ", status_code=400)
     websites = req.params['websites'].split(',')
-    
     if len(websites) == 1:
         print('----------------------------------------------')
         print('getting headlines from single website')
@@ -121,6 +121,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     for site in websites:
         result[site] = word_frequency(site)
     result = json.dumps(result)
-    print('done')
+    print('Done. \nResults:')
     print(result)
     return func.HttpResponse(result)
+    # except:
+        # return func.HttpResponse("Error, something went wrong", status_code=500)

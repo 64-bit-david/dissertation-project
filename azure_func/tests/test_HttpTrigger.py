@@ -5,20 +5,23 @@ from os import path
 import os
 
 class TestFunction(unittest.TestCase):
+    """
+    GIVEN the HttpRequest function
+    WHEN the correct paramters are passed
+    THEN the function should response with a successful status code
+    """
+    def test_my_second_function(self):
+        req = func.HttpRequest(
+            method='GET',
+            body=None,
+            url='/api/my_second_function',
+            params={'websites': 'bbc'})
 
-    # def test_my_second_function(self):
-    #     req = func.HttpRequest(
-    #         method='GET',
-    #         body=None,
-    #         url='/api/my_second_function',
-    #         params={'websites': 'bbc'})
 
-
-    #     res = main(req)
-    #     print(res)
-    #     self.assertEqual(
-    #         res.status_code,200
-    #     )
+        res = main(req)
+        self.assertEqual(
+            res.status_code,200
+        )
 
 
     def test_word_counter(self):
@@ -58,12 +61,14 @@ class TestFunction(unittest.TestCase):
         self.assertEqual(test_result1, correct_result)
 
 
+
+
     
     def test_get_header_tags(self):
         """
-        GIVEN the get_header_tags helper function and a dummy html file
-        WHEN the function is called with the 'msnbc' name and the html file has the corresponding 'msnbc' html tags
-        THEN the value returned should be equal to the expected string
+        GIVEN the get_header_tags helper function and a dummy html file containting attributes of supported websites
+        WHEN the function is called with the with each supported website name
+        THEN the file should be parsed into the expected string 
         """
         
         with open('tests/page_test.html', 'r') as f:
