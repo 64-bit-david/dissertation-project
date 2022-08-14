@@ -7,7 +7,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token, get_jw
 from datetime import datetime
 from constants import news_sites
 import ast
-
+import traceback
 
 routes=Blueprint('/', __name__, url_prefix='/api/v1')
 auth=Blueprint('auth', __name__, url_prefix='/api/v1/auth')
@@ -39,14 +39,16 @@ def get_word_freq():
         
         res = requests.get(az_func_url)
         if(res.status_code != 200):
+            print(res.text)
             return make_response(jsonify({'error': "Internal server error. Something went wrong..."}), 500)
         #make_response seems to double eoncode json so use Response object instead
         return Response(
             res.text,
             status=res.status_code
         )
-   
-    except: 
+
+    except Exception:
+        traceback.print_exc() 
         return make_response(jsonify({'error': "Internal server error. Something went wrong..."}), 500)
 
 
@@ -150,6 +152,7 @@ def test_auth():
 @auth.post('/sign-up')
 def sign_up():
     # try: 
+    print(request.json)
     username=request.json['username']
     password=request.json['password']
     confirm_pass = request.json['confirm_password']
@@ -163,7 +166,7 @@ def sign_up():
     user = User(username, password)
     db.session.add(user)
     db.session.commit()
-    return make_response(jsonify({'msg': "Account created successfully"}), 201)
+    return make_response(jsonify({'msg': "Account Created Successfully"}), 201)
 
     # except:
     #     return make_response(jsonify({'error': "Internal server error. Something went wrong..."}), 500)
@@ -214,8 +217,9 @@ def login():
                 'user':{
                     'access_token': access_token,
                     'refresh_token': refresh_token,
-                    'username':user.username
-                }
+                    'username':user.username,
+                    'msg': 'Sign In Successful'
+                },
             }), 200)
         else:
             return make_response(jsonify({'error': 'Incorrect credentials'}), 401)
