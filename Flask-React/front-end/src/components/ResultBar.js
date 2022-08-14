@@ -2,16 +2,14 @@ import React from 'react'
 import {Header} from 'semantic-ui-react';
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-const ResultBar = ({newsData, website}) => {
+const ResultBar = ({newsData, website, height, width}) => {
 
 
-  console.log(newsData)
-    
 
   return (
           <div style={barStyles}>
             <Header as='h3' textAlign='center'>Word Frequency Results for {website}</Header>
-            <BarChart width={800} height={400} data={newsData.slice(0, 10)}>
+            <BarChart width={width} height={height} data={newsData.slice(0, 10)}>
               <Bar dataKey="count" fill="#8884d8" />
               <XAxis dataKey="value" />
               <YAxis dataKey="count" />
@@ -24,7 +22,7 @@ const barStyles = {
   display: "flex",
   flexDirection: 'column',
   justifyContent: "center",
-  alignItems: "center"
+  alignItems: "center",
   
 }
 

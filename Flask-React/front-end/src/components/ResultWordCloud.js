@@ -4,16 +4,15 @@ import {Header} from 'semantic-ui-react';
 
 
 const ResultWordCloud = ({newsData, website}) => {
-  console.log(website)
   return (
-                <>
+                <div>
                 <Header as='h3' textAlign='center'>Word Frequency Results for {website}</Header>
                 <TagCloud
                   minSize={12}
                   maxSize={35}
                   tags={newsData}
                  />
-                 </>
+                 </div>
   )
 }
 

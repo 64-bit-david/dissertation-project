@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
-import {Modal, Button, Container, Form, Header, Icon} from 'semantic-ui-react';
+import {Form, Modal, Button, Container, Header, Icon, Label} from 'semantic-ui-react';
+// import {Form} from 'formsy-semantic-ui-react';
+import axios from '../api/axios'
+
 
 
 
@@ -17,7 +20,8 @@ const SignUpModal = (
   const [signUpPassword, setSignUpPassword] = useState('');
   const [signUpPasswordConfirm, setSignUpPasswordConfirm] = useState('');
   const [signUpSuccess, setSignUpSuccess] = useState(false)
-  const [signUpError, setSignUpError] = useState(false)                    
+  const [signUpError, setSignUpError] = useState(false)    
+  const [modalMessage, setModalMessage] = useState('')
 
 
 
@@ -40,29 +44,28 @@ const SignUpModal = (
     setSignUpPasswordConfirm(e.target.value)
   }
 
+  const errorLabel = <Label color="red" pointing/>
+
 
 
   const handleSignInSubmit = () => {
-    const loginUrl = 'http://127.0.0.1:5000/api/v1/auth/sign-up'
-
-
-    const reqOptions = {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        'username': signUpUsername,
-        'password': signUpPassword,
-        'confirm_password': signUpPasswordConfirm
-      })
-    }
-
-    // setLoadingSignUp(true)
-
-    fetch(loginUrl, reqOptions)
-      .then(res => res.json())
-      .then(data => {
-        // setLoadingLogIn(false)
+    const signUpURL = 'auth/sign-up'
+    axios.post(signUpURL,   {
+      username: signUpUsername,
+      password: signUpPassword,
+      confirm_password: signUpPasswordConfirm
+    })
+      .then((data) => {
+        setModalMessage(data.data.msg)
         setSignUpSuccess(true)
+        setSignUpUsername('')
+        setSignUpPassword('')
+        setSignUpPasswordConfirm('')        
+      })
+      .catch(err => {
+        setSignUpError(true)
+        console.log(err.response)
+        setModalMessage(err.response.data.error)
       })
   }
     
@@ -81,11 +84,33 @@ const SignUpModal = (
         <Form.Field>
           <label>Username</label>
           <input
+               style={inputStyle} 
+               placeholder='Enter Username..' 
+               value={signUpUsername}
+               onChange={(e)=> handleSignUpUsername(e)}
+          />
+        </Form.Field>
+        {/* </Form> */}
+        {/* <Form style={formStyle}> */}
+          {/* VALIDATED VERSION?? */}
+        {/* <Form.Input
+              label='Username'
+              name='Username'
               style={inputStyle} 
+              validations={{
+                minLength: 5,
+                maxLength: 30
+              }}
+              validationErrors={{
+                minLength: 'Username must have at least 5 characters',
+                maxLength: 'Username must no more than 30 characters'
+              }}
               placeholder='Enter username..'
               value={signUpUsername}
-              onChange={(e)=>handleSignUpUsername(e)}/>
-        </Form.Field>
+              onChange={(e)=>handleSignUpUsername(e)} 
+              errorLabel={errorLabel}
+              /> */}
+        {/* </Form.Input> */}
         <Form.Field>
           <label>Password</label>
           <input
@@ -135,7 +160,7 @@ const SignUpModal = (
       return(
           <Container textAlign='center' style={{margin: '3rem 0'}}>
             <Modal.Header as='h2'>
-                Registration Successful
+                {modalMessage}
             </Modal.Header>
             <Icon
             name='check circle'
@@ -163,8 +188,41 @@ const SignUpModal = (
             >Close</Button>
           </Container>
       )
+    }else if (signUpError){
+      return(
+        <Container textAlign='center' style={{margin: '3rem 0'}}>
+        <Modal.Header as='h2'>
+            An Error Occurred
+        </Modal.Header>
+        <Icon
+        name='exclamation circle'
+        size='huge'
+        color='red'
+        ></Icon>
+        <br/>
+        <Modal.Header as='h3'>
+          {modalMessage}
+        </Modal.Header>
+        <br/>
+        <Modal.Header as='h3'>
+          Please try again
+        </Modal.Header>
+     
+    <br/>
+    <br/>
+      <Button
+        primary
+        onClick={() => {
+          setModalSignUpIsOpen(false)
+          setSignUpSuccess(false)
+          setModalMessage('')
+          setSignUpError(false)
+        }}
+        >Close</Button>
+      </Container>
+      )
     }
-  }
+  } 
 
 
   return (

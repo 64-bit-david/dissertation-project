@@ -109,13 +109,6 @@ function NavBar(
                                 <Modal.Header as='h2'>
                                     Confirm Sign Out
                                 </Modal.Header>
-                                {/* <Icon
-                                name='check circle'
-                                size='huge'
-                                color='green'
-                                ></Icon>
-                                <br/>
-                                <br/> */}
 
                                 <Button
                                     primary
@@ -124,7 +117,9 @@ function NavBar(
                                     }}
                                 >Sign Out</Button>
                                 <Button
-                                onClick={() => setSignOutModalSuccess(false)}
+                                onClick={() => {
+                                    setSignOutModalActive(false)                                
+                                    setSignOutModalSuccess(false)}}
                                     primary
                                     >Cancel</Button>
                              </Container>
@@ -159,7 +154,7 @@ function NavBar(
                                     }}
                                 >Close</Button>
                               
-                             </Container>
+                            </Container>
                         </Modal>
                     )
                 }

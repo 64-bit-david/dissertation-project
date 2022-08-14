@@ -5,7 +5,7 @@ const ResultTable = ({newsData, website}) => {
 
 
   return (
-    <div>
+    <div style={{margin: '0 2rem'}}>
       <Header as='h3' textAlign='center'>Word Frequency Results for {website}</Header>
       <Table celled>
         <Table.Header>
@@ -22,7 +22,6 @@ const ResultTable = ({newsData, website}) => {
           </Table.Row>
         ))}
       </TableBody>
-
       </Table>
     </div>
   )

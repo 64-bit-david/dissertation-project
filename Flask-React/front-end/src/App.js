@@ -1,4 +1,5 @@
 import {useState, useEffect} from 'react';
+import axios from './api/axios'
 import NavBar from './components/Navbar';
 import {Container, Header, Loader} from 'semantic-ui-react';
 import Home from './components/Home';
@@ -7,6 +8,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PreviousResults from './components/PreviousResults';
 import LogInModal from './components/LogInModal';
 import SignUpModal from './components/SignUpModal';
+import ErrorPage from './components/ErrorPage';
+
 
 
 
@@ -18,9 +21,9 @@ function App() {
   
 
   const [newsData, setNewsData] = useState(null)
-
   const [loading, setLoading] = useState(false)
-  // const [error, setError] = useState(null)
+  const [error, setError] = useState(null)
+  const[errCode, setErrCode] = useState(null)
   const[analysisValue, setAnalysisValue] = useState(null)
   const [websiteChoice, setWebsiteChoice] = useState(null)
   const [websiteChoice1, setWebsiteChoice1] = useState(null)
@@ -29,33 +32,44 @@ function App() {
   const [modalLogInIsOpen, setModalLogInIsOpen] = useState(false);
   const [modalSignUpIsOpen, setModalSignUpIsOpen] = useState(false);
   const[isSavedResult, setIsSavedResult] = useState(false);
-
   const [currentUser, setCurrentUser] = useState(null)
+  const [sites, setSites] = useState(null)
+  const [websitesOptions, setWebsitesOptions] = useState(null)
 
-  // useEffect(() => {
-  // const getUser =  'http://127.0.0.1:5000/api/v1/'
-    
+  useEffect(() => {
+    if(!sites){
+    axios.get()
+    .then( res => {
+      setSites(res.data.data)
+    })
   
+  
+  }
  
-  // }, [isSignedIn])
+  }, [sites])
   
-
-  // useEffect(() => {
-  //   let isMounted = true;
-  //   const controller = new AbortController();
-
-    
-  // })
-
+  useEffect(() => {
+    if(sites && !websitesOptions){
+      const tempArr = []
+      for(let site in sites){
+        let tempObj = {}
+        tempObj['key'] = site
+        tempObj['value'] = site
+        tempObj['text'] = sites[site]
+        tempArr.push(tempObj)
+      }
+      setWebsitesOptions(tempArr)
+    }
+  },[sites, websitesOptions])
 
   // const sites = ['BBC', 'The Guardian', 'Fox News']
-  const sites = {'bbc': 'BBC', 'guardian': 'The Guardian', 'fox':'Fox News'}
+  // const sites = {'bbc': 'BBC', 'guardian': 'The Guardian', 'fox':'Fox News'}
 
-  const websitesOptions = [
-    {key: 'bbc', value:'bbc', text: 'the BBC'},
-    {key: 'guardian', value: 'guardian', text: 'the Guardian'},
-    {key: 'fox', value: 'fox', text: 'Fox News'},
-  ]
+  // const websitesOptions = [
+  //   {key: 'bbc', value:'bbc', text: 'the BBC'},
+  //   {key: 'guardian', value: 'guardian', text: 'the Guardian'},
+  //   {key: 'fox', value: 'fox', text: 'Fox News'},
+  // ]
 
   const analysisOptions = [
     {key: 'wf', value:'wf', text: 'Word Frequency'},
@@ -66,6 +80,8 @@ function App() {
 
 
   const FrontPageRenderHelper = () => {
+    if(!error){
+
     if(!loading && !newsData){
       return(
         <Home
@@ -83,11 +99,15 @@ function App() {
         setAnalysisValue={setAnalysisValue}
         setLoading={setLoading}
         setNewsData={setNewsData}
+        setError={setError}
+        setErrCode={setErrCode}
         />
       )
     }else if(loading && !newsData){
       return(
-        <Loader active>Gathering Your Data</Loader>
+        <Loader active>
+          Collecting data... {!currentUser && <><br/><br/><>Why not sign in while you wait?</></>}
+        </Loader>
       )
     }else{
       return(
@@ -109,7 +129,10 @@ function App() {
               />
       )
     }
+  } else {
+    return <ErrorPage errCode={errCode} setState1={setLoading} setError={setError}/>
   }
+}
  
 
 
@@ -135,6 +158,7 @@ function App() {
                     setIsSavedResult={setIsSavedResult}
                     newsData={newsData}
                     setNewsData={setNewsData}
+                    sites={sites}
                     />
           } />
           <Route path = '/' element={<FrontPageRenderHelper/>} />

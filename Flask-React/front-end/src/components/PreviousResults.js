@@ -4,9 +4,7 @@ import axios from '../api/axios';
 import ConfirmModal from './ConfirmModal';
 import Results  from './Results';
 
-const PreviousResults = (
-  {currentUser
-  }) => {
+const PreviousResults = ({currentUser, sites}) => {
 
 const [userResults, setUserResults] = useState([])
 
@@ -20,7 +18,6 @@ const[deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
 const[deleteId, setDeleteId] = useState(null)
 const[deleteSuccess, setDeleteSuccess] = useState(false)
 const [panalysisValue, setPAnalysisValue] = useState(null)
-
 
 const resultTypeArray = {
         wf: 'Word Frequency',
@@ -40,7 +37,6 @@ useEffect(() => {
     return res.data
   }).then(data => {
     setUserResults(data.results)
-    console.log(data.results)
   })
 }, [currentUser])
 
@@ -121,7 +117,6 @@ useEffect(() => {
             <Button negative onClick={() => {
               setDeleteModalIsOpen(true)
               setDeleteId(userResult.id)
-              console.log('clicked delte')
               }}>Delete Result</Button>
             {/* <Button negative onClick={()=> deleteResultHandler(userResult.id)}>Delete Result</Button> */}
           </Table.Cell>
@@ -170,6 +165,7 @@ useEffect(() => {
            userResults={userResults}
            setUserResults={setUserResults}
            setAnalysisValue={setPAnalysisValue}
+           sites={sites}
            />
       }
     }

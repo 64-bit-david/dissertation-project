@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import {Modal, Button, Container, Form, Icon} from 'semantic-ui-react';
-import ConfirmModal from './ConfirmModal';
+import axios from '../api/axios'
 
 
 
@@ -10,7 +10,8 @@ const LogInModal = (
                      modalSignUpIsOpen, 
                      setModalSignUpIsOpen,
                      currentUser,
-                     setCurrentUser }) => {
+                     setCurrentUser,
+                     }) => {
 
 
 
@@ -22,6 +23,7 @@ const LogInModal = (
   const [loadingLogIn, setLoadingLogIn] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(false);
   const [loginError, setLoginError] = useState(false);
+  const [modalMessage, setModalMessage] = useState(false);
 
 
 
@@ -43,7 +45,7 @@ const LogInModal = (
 
 
   const handleLogInSubmit = () => {
-    const loginUrl = 'http://127.0.0.1:5000/api/v1/auth/login'
+    const loginUrl = 'auth/login'
 
 
     const reqOptions = {
@@ -55,15 +57,19 @@ const LogInModal = (
       })
     }
 
-    setLoadingLogIn(true)
+    // setLoadingLogIn(true)
 
-    fetch(loginUrl, reqOptions)
-      .then(res => res.json())
+    axios.post(loginUrl, {
+      username: loginUsername,
+      password: loginPassword
+    })
       .then(data => {
-        setCurrentUser(data.user)
-        // setLoadingLogIn(false)
-        // setModalLogInIsOpen(false)
+        setCurrentUser(data.data.user)
         setLoginSuccess(true)
+      })
+      .catch(err => {
+        setLoginError(true)
+        setModalMessage(err.response.data.error)
       })
   }
 
@@ -142,6 +148,38 @@ const LogInModal = (
           onClick={() => {
             setModalLogInIsOpen(false)
             setLoginSuccess(false)
+          }}
+          >Close</Button>
+    </Container>
+      )
+    } else if(loginError){
+      return(
+        <Container textAlign='center' style={{margin: '3rem 0'}}>
+        <Modal.Header as='h2'>
+              An Error Occurred
+        </Modal.Header>
+        <Icon
+        name='exclamation circle'
+        size='huge'
+        color='red'
+        ></Icon>
+        <br/>
+        <Modal.Header as='h3'>
+            {modalMessage}
+          </Modal.Header>
+          <Modal.Header as='h3'>
+            Please try again
+          </Modal.Header>
+          <br/>
+
+
+        <Button
+          primary
+          onClick={() => {
+            setModalLogInIsOpen(false)
+            setLoginSuccess(false)
+            setLoginError(false)
+            setModalMessage('')
           }}
           >Close</Button>
     </Container>

@@ -2,12 +2,12 @@
 import { Container, Header, Button } from "semantic-ui-react"
 import DropDown from "./DropDown";
 import axios from '../api/axios';
+import { useEffect, useState } from "react";
 
-const Home = ({websiteChoice, 
+const Home = ({ 
               websiteChoice1, 
               websiteChoice2,
               websiteChoice3, 
-              setWebsiteChoice, 
               setWebsiteChoice1, 
               setWebsiteChoice2, 
               setWebsiteChoice3,
@@ -16,11 +16,13 @@ const Home = ({websiteChoice,
               analysisOptions,
               setNewsData,
               setLoading,
-              setAnalysisValue}) => {
+              setAnalysisValue,
+              setError,
+              setErrCode}) => {
 
 
-             
-
+  
+  const [renderThirdDrop, setRenderThirdDrop] = useState(false)
 
   const getHeadlineWordFreqs = () => {
     let queryParams = ''
@@ -46,10 +48,15 @@ const Home = ({websiteChoice,
         setNewsData(data)
       })
       .catch(err => {
-        console.log(err.message)
+        console.log(err)
+        setError(true)
+        setErrCode(err.response.status)
+        
       })
 
     }
+
+  
 
   const DropDownWebsites = () =>{ 
     if(analysisValue==='wf'){
@@ -73,7 +80,7 @@ const Home = ({websiteChoice,
         <Container>
           <div style={{ marginTop: '1em 0' }}>
             <Container style={{display: 'flex', justifyContent: 'center', margin: '2rem 0'}}>
-              <Header as='h5'>Select a website to find the most frequently used words in their headlines at this moment</Header>
+              <Header as='h5'>Select websites to find the most frequently used words in their headlines at this moment</Header>
             </Container>
               <DropDown
                   selectOptions={websitesOptions} 
@@ -87,11 +94,75 @@ const Home = ({websiteChoice,
                   setSelectValue={setWebsiteChoice2}
                   />
           </div>
-            {/* Need a button here to optionally render third drop down! */}
+            {renderThirdDrop && 
+            <div style={{ marginTop: '1em' }}>
+              <DropDown
+                selectOptions={websitesOptions} 
+                selectValue={websiteChoice3}
+                setSelectValue={setWebsiteChoice3}
+              />
+              </div>
+              }
           </div>
         </Container>
     )}
   }
+
+  const StartAnalysisBtn  = () => {
+    return(
+      <Button content='Start Analysis' primary onClick={() => getHeadlineWordFreqs()} textAlign='center'/>
+    )
+  }
+
+
+  const RenderAnalysisBtn = () => {
+    if(analysisValue == 'wfc' && (websiteChoice1 && websiteChoice2) ){
+      return(
+        <StartAnalysisBtn />
+      )
+    }
+    if(analysisValue == 'wf' && websiteChoice1){
+      return(
+        <StartAnalysisBtn />
+      )
+    }
+  }
+
+  const RemoveOptionBtn = () => {
+    return(
+      <div style={optionBtnStyle}>
+        <p style={{fontSize: '18px', margin: '0'}}>Remove Third Option</p>
+        <Button
+          color='red'
+          style={{marginLeft: '2rem'}}
+          onClick={()=> setRenderThirdDrop(false)}
+          >Remove</Button>
+      </div>
+    )
+  }
+
+  const AddOptionBtn = () => {
+    return(
+      <div style={optionBtnStyle}>
+        <p style={{fontSize: '18px', margin: '0'}}>Add Another Website</p>
+        <Button
+          color='green'
+          style={{marginLeft: '2rem'}}
+          onClick={()=> setRenderThirdDrop(true)}
+          >Add</Button>
+      </div>
+    )
+  }
+
+
+  const OptionRenderer = () => {
+    if(renderThirdDrop){
+      return <RemoveOptionBtn/>
+    }else{
+      return <AddOptionBtn/>
+  }
+}
+
 
 
   return(
@@ -106,11 +177,20 @@ const Home = ({websiteChoice,
           </Container>
           <DropDownWebsites />
           <Container style={{ margin:'2em 0' }} textAlign='center'>
-          <Button content='Start Analysis' primary onClick={() => getHeadlineWordFreqs()} textAlign='center'/>
+            {/* Not Working.. */}
+          {/* <OptionRenderer/> */}
+          {/* {OptionRenderer()} */}
+          <RenderAnalysisBtn />
           </Container>
     </div>
   )
 
+  }
+
+  const optionBtnStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 
 

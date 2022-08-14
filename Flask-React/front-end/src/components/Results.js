@@ -16,7 +16,7 @@ const Results = (
                  websiteChoice1, 
                  websiteChoice2, 
                  websiteChoice3, 
-                //  sites, 
+                 sites, 
                  setAnalysisValue, 
                  setWebsiteChoice1, 
                  setWebsiteChoice2,
@@ -51,7 +51,6 @@ const Results = (
 
     ]
 
-    const sites = {'bbc': 'BBC', 'guardian': 'The Guardian', 'fox':'Fox News'}
 
 
 
@@ -85,100 +84,8 @@ const Results = (
           })
       }
 
-    const RenderResultView = () => {
-        if (resultTypeValue == 'table'){
-            if(websiteChoice3){
-                return(
-                    <>
-                        <ResultTable newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]} />
-                        <br/>
-                        <ResultTable newsData={newsData[websiteChoice2]} website={sites[websiteChoice2]}/>
-                        <br/>
-                        <ResultTable newsData={newsData[websiteChoice3]} website={sites[websiteChoice3]}/>
 
-                    </>);
-            }else if(websiteChoice2){
-                return(
-                <>
-                    <ResultTable newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
-                    <br/>
-                    <ResultTable newsData={newsData[websiteChoice2]} website={sites[websiteChoice2]}/>
-                </>);
-            }else{
-                return   <ResultTable newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
-            } 
-        }
-        if (resultTypeValue == 'cloud'){
-            if(websiteChoice3 ){
-                return(
-                    <>
-                        <ResultWordCloud newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
-                        <br />
-                        <ResultWordCloud newsData={newsData[websiteChoice2]} website={sites[websiteChoice2]}/>
-                        <br />
-                        <ResultWordCloud newsData={newsData[websiteChoice3]} website={sites[websiteChoice3]}/>
-
-                    </>);
-            }else if(websiteChoice2){
-                return(
-                <>
-                    <ResultWordCloud newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
-                    <br />
-                    <ResultWordCloud newsData={newsData[websiteChoice2]} website={sites[websiteChoice2]}/>
-                </>);
-            }else{
-                return   <ResultWordCloud newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
-            } 
-        }
-        if (resultTypeValue == 'bar'){
-            if(websiteChoice3 ){
-                return(
-                    <>
-                        <ResultBar newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
-                        <br />
-                        <ResultBar newsData={newsData[websiteChoice2]} website={sites[websiteChoice2]}/>
-                        <br />
-                        <ResultBar newsData={newsData[websiteChoice3]} website={sites[websiteChoice3]}/>
-
-                    </>);
-            }else if(websiteChoice2){
-                return(
-                <>
-                    <ResultBar newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
-                    <br />
-                    <ResultBar newsData={newsData[websiteChoice2]} website={sites[websiteChoice2]}/>
-                </>);
-            }else{
-                return   <ResultBar newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
-            } 
-        }
-        if (resultTypeValue == 'pie'){
-            if(websiteChoice3 ){
-                return(
-                    <>
-                        <ResultPie newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
-                        <br />
-                        <ResultPie newsData={newsData[websiteChoice2]} website={sites[websiteChoice2]}/>
-                        <br />
-                        <ResultPie newsData={newsData[websiteChoice3]} website={sites[websiteChoice3]}/>
-
-                    </>);
-            }else if(websiteChoice2){
-                return(
-                <div style={resultPieStyle}>
-                    <ResultPie newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
-                    <br />
-                    <ResultPie newsData={newsData[websiteChoice2]} website={sites[websiteChoice2]}/>
-                </div>);
-            }else{
-                return   <ResultPie newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
-            } 
-        }
-    }
-
-    const handleChange = (event, {value}) => setValue(value);
-
-    const postResultData = () => {
+      const postResultData = () => {
         setResultIsSaving(true)
         const createReqBody = () => {
             const body = {}
@@ -225,22 +132,215 @@ const Results = (
 
 
 
+
+
+    const RenderResultView = () => {
+        if (resultTypeValue == 'table'){
+            if(websiteChoice3){
+                return(
+                    <>
+                        <ResultTable 
+                            newsData={newsData[websiteChoice1]} 
+                            website={sites[websiteChoice1]}
+                        />
+                        <br/>
+                        <ResultTable
+                            newsData={newsData[websiteChoice2]} 
+                            website={sites[websiteChoice2]}
+                         />
+                        <br/>
+                        <ResultTable
+                            newsData={newsData[websiteChoice3]} 
+                            website={sites[websiteChoice3]}
+                         />
+                    </>);
+            }else if(websiteChoice2){
+                return(
+                <div style={twoResultsTable}>
+                    <ResultTable 
+                        newsData={newsData[websiteChoice1]} 
+                        website={sites[websiteChoice1]}
+                       
+                        />
+                    <br/>
+                    <ResultTable
+                         newsData={newsData[websiteChoice2]} 
+                         website={sites[websiteChoice2]}
+                         />
+                </div>);
+            }else{
+                return  <ResultTable 
+                            newsData={newsData[websiteChoice1]} 
+                            website={sites[websiteChoice1]}
+                        />
+            } 
+        }
+        if (resultTypeValue == 'cloud'){
+            if(websiteChoice3 ){
+                return(
+                    <>
+                        <ResultWordCloud
+                             newsData={newsData[websiteChoice1]} 
+                             website={sites[websiteChoice1]}/>
+                        <br />
+                        <ResultWordCloud 
+                                newsData={newsData[websiteChoice2]}
+                                website={sites[websiteChoice2]}/>
+                        <br />
+                        <ResultWordCloud 
+                            newsData={newsData[websiteChoice3]} 
+                            website={sites[websiteChoice3]}
+                            />
+                    </>);
+            }else if(websiteChoice2){
+                return(
+                <div style={twoResultsCloud}>
+                    <ResultWordCloud 
+                        newsData={newsData[websiteChoice1]} 
+                        website={sites[websiteChoice1]}
+                        />
+                    <br />
+                    <ResultWordCloud 
+                        newsData={newsData[websiteChoice2]} 
+                        website={sites[websiteChoice2]} 
+                        />
+                </div>);
+            }else{
+                return   <ResultWordCloud newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
+            } 
+        }
+        if (resultTypeValue == 'bar'){
+            if(websiteChoice3 ){
+                return(
+                    <>
+                        <ResultBar 
+                            newsData={newsData[websiteChoice1]} 
+                            website={sites[websiteChoice1]}
+                            width={800}
+                            height={400} 
+                            />
+                        <br />
+                        <ResultBar
+                             newsData={newsData[websiteChoice2]} 
+                             website={sites[websiteChoice2]}
+                             width={800}
+                             height={400} 
+                             />
+                        <br />
+                        <ResultBar 
+                            newsData={newsData[websiteChoice3]} 
+                            website={sites[websiteChoice3]}
+                            width={800}
+                            height={400} 
+                            />
+
+                    </>);
+            }else if(websiteChoice2){
+            
+                return(
+                <div style={twoResultsBar}>
+                    <ResultBar 
+                        newsData={newsData[websiteChoice1]} 
+                        website={sites[websiteChoice1]}
+                        height={300}
+                        width={600} 
+                        />
+                    <br />
+                    <ResultBar 
+                        newsData={newsData[websiteChoice2]} 
+                        website={sites[websiteChoice2]}
+                        height={300}
+                        width={600} 
+                        />
+                </div>);
+            }else{
+                return   <ResultBar 
+                            newsData={newsData[websiteChoice1]} 
+                            website={sites[websiteChoice1]}
+                            width={800}
+                            height={400} 
+                            />
+            } 
+        }
+        if (resultTypeValue == 'pie'){
+            if(websiteChoice3 ){
+                return(
+                    <>
+                        <ResultPie 
+                            newsData={newsData[websiteChoice1]} 
+                            website={sites[websiteChoice1]}
+                            height={400}
+                            width={400} 
+                            />
+                        <br />
+                        <ResultPie 
+                            newsData={newsData[websiteChoice2]} 
+                            website={sites[websiteChoice2]}
+                            height={400}
+                            width={400} 
+                            />
+                        <br />
+                        <ResultPie 
+                            newsData={newsData[websiteChoice3]} 
+                            website={sites[websiteChoice3]}
+                            height={400}
+                            width={400} 
+                            />
+
+                    </>);
+            }else if(websiteChoice2){
+                return(
+                <div style={resultPieStyle}>
+                    <ResultPie 
+                        newsData={newsData[websiteChoice1]} 
+                        website={sites[websiteChoice1]}
+                        height={350}
+                        width={350} 
+                        />
+                    <br />
+                    <ResultPie 
+                        newsData={newsData[websiteChoice2]} 
+                        website={sites[websiteChoice2]}
+                        height={350}
+                        width={350} 
+                        />
+                </div>);
+            }else{
+                return   <ResultPie 
+                                newsData={newsData[websiteChoice1]} 
+                                website={sites[websiteChoice1]}
+                                height={400}
+                                width={400} 
+                                />
+            } 
+        }
+    }
+
+
+    
+
+
+
     const SaveElement = () => {
-        if(saved && !resultIsSaving){
-            return (
-            <>
-              <Button color='green'>Result Saved!</Button>
-              <Icon
-                    name='check circle'
-                    size='large'
-                    color='green'
-                />
-            </> 
-            )
-        } else if(!saved && resultIsSaving){
-            return <Button loading primary>Saving...</Button>
-        }else{
-            return <Button primary onClick={()=> postResultData()}>Save Result</Button>
+        if(currentUser){
+            if(saved && !resultIsSaving){
+                return (
+                <>
+                <Button color='green'>Result Saved!</Button>
+                <Icon
+                        name='check circle'
+                        size='large'
+                        color='green'
+                    />
+                </> 
+                )
+            } else if(!saved && resultIsSaving){
+                return <Button loading primary>Saving...</Button>
+            }else{
+                return <Button primary onClick={()=> postResultData()}>Save Result</Button>
+            }
+        } else{
+            return <Button disabled primary>Sign in to save your result</Button>
         }
     }
 
@@ -307,6 +407,11 @@ const Results = (
             <Container style={{margin: '3rem 0'}} textAlign='center'>
                 <ButtonRenderHelper/>
             </Container>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+
             <ConfirmModal
                 setIsOpen={setDeleteModalIsOpen}
                 isOpen={deleteModalIsOpen}
@@ -324,13 +429,25 @@ const Results = (
 
 const resultPieStyle = {
     display: 'flex',
-    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
 }
 
-const resultsMargin = {
-    margin: '3rem 0'
+const twoResultsTable = {
+    display: 'flex',
+    justifyContent: 'center'
 }
+
+const twoResultsCloud = {
+    display: 'flex',
+    justifyContent: 'space-around'
+}
+
+const twoResultsBar = {
+    display: 'flex',
+    justifyContent: 'space-around'
+}
+
+
 
 export default Results;

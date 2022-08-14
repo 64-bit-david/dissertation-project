@@ -7,7 +7,7 @@ import {Header} from 'semantic-ui-react';
 
 
 
-const ResultPie = ({newsData, website}) => {
+const ResultPie = ({newsData, website, width, height}) => {
 
     
 
@@ -18,13 +18,13 @@ const ResultPie = ({newsData, website}) => {
 
 
     return (
-        <>
+        <div>
         <Header as='h3' textAlign='center'>Word Frequency Results for {website}</Header>
         <div style={pieChartStyle}>
             <RadialChart
                 data={newData.slice(0, 10)}
-                width={400}
-                height={400}
+                width={width}
+                height={height}
                 labelsRadiusMultiplier={1.1}
                 labelsStyle={{
                     fontSize: 16
@@ -33,13 +33,14 @@ const ResultPie = ({newsData, website}) => {
                 animation={{ damping: 10, stiffness: 20 }}
                 />
         </div>
-        </>
+        </div>
     )
 }
 
 const pieChartStyle = {
     display: 'grid',
-    placeItems: 'center'
+    placeItems: 'center',
+    margin: '0 4rem'
 }
 
 export default ResultPie
