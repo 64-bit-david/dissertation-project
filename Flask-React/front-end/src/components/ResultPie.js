@@ -15,8 +15,6 @@ const ResultPie = ({newsData, website, width, height}) => {
 
     
 
-
-
     return (
         <div>
         <Header as='h3' textAlign='center'>Word Frequency Results for {website}</Header>

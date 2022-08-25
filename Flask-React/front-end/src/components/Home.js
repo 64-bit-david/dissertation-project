@@ -37,7 +37,7 @@ const Home = ({
       } 
     }
   
-    axios.get('/word_frequency' + queryParams )
+    axios.get('/word-frequency' + queryParams )
       .then(res => {
         console.log(res)
         return res.data

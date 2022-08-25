@@ -236,9 +236,6 @@ const SignUpModal = (
         causes a bug where the input fields lose focus after typing each letter
         This is the easiest workaround to prevent the bug. */}
     {ModalContentHelper()}
-      
-
-
     </Modal>
       
   )

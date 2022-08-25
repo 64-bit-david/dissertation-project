@@ -25,7 +25,7 @@ const resultTypeArray = {
 
 useEffect(() => {
   const accessToken = 'Bearer ' + currentUser['access_token']
-  const url = '/get_word_frequencies'
+  const url = '/results'
 
   const reqOptions = {
     headers:{

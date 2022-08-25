@@ -108,7 +108,7 @@ const Results = (
             return body
         }
     
-        const postDataUrl = 'http://127.0.0.1:5000/api/v1/add_word_frequency'
+        const postDataUrl = 'http://127.0.0.1:5000/api/v1/result'
         const accessToken = 'Bearer ' + currentUser['access_token']
 
         const reqOptions = {
@@ -206,7 +206,9 @@ const Results = (
                         />
                 </div>);
             }else{
-                return   <ResultWordCloud newsData={newsData[websiteChoice1]} website={sites[websiteChoice1]}/>
+                return   <ResultWordCloud
+                            newsData={newsData[websiteChoice1]}
+                            website={sites[websiteChoice1]}/>
             } 
         }
         if (resultTypeValue == 'bar'){
@@ -252,7 +254,7 @@ const Results = (
                         height={300}
                         width={600} 
                         />
-                </div>);
+                    </div>);
             }else{
                 return   <ResultBar 
                             newsData={newsData[websiteChoice1]} 

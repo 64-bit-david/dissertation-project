@@ -206,13 +206,6 @@ const LogInModal = (
   )
 }
 
-const inputContainerStyles = {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-}
-
 const inputStyle = {
   margin: '.25rem 0'
 }

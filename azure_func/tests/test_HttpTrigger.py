@@ -17,7 +17,6 @@ class TestFunction(unittest.TestCase):
             url='/api/my_second_function',
             params={'websites': 'bbc'})
 
-
         res = main(req)
         self.assertEqual(
             res.status_code,200

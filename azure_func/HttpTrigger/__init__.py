@@ -61,13 +61,9 @@ def headline_filter(headlines, count=0):
     A function that removes stopwords from a given string of many words
     """
 
-
     stop_words = set(stopwords.words('english'))
     word_tokens = word_tokenize(headlines)
-
-
     filtered_words = ""
-
     for w in word_tokens:
         if w not in stop_words and w.isalpha() and len(w) > 2:
             filtered_words = filtered_words + w.lower() + " "
@@ -84,7 +80,6 @@ def word_counter(text):
     """
     A function that counts the frequency of each word in a string  
     """
-
 
     tokens = [t for t in text.split()]
     counts = Counter(tokens)
@@ -117,6 +112,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         print('----------------------------------------------')
         print(f'getting headlines from {len(websites)} websites')
         print('----------------------------------------------')
+    
     result = {}
     for site in websites:
         result[site] = word_frequency(site)

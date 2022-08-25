@@ -14,7 +14,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # 1. Install Chrome (root image is debian)
-# See https://stackoverflow.com/questions/49132615/installing-chrome-in-docker-file
+
 ARG CHROME_VERSION="google-chrome-stable"
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
     && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list \
@@ -36,18 +36,13 @@ ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
 
 # 3. Install selenium in Python
 RUN pip install -U selenium
-
-# 4. Finally, copy python code to image
-# COPY . /home/site/wwwroot
-
-# # 5. Install other packages in requirements.txt
-# RUN cd /home/site/wwwroot && \
-#     pip install -r requirements.txt
-
 RUN pip3 install nltk
 RUN [ "python", "-c", "import nltk; nltk.download('corpus')" ]
 RUN [ "python", "-c", "import nltk; nltk.download('stopwords')" ]
 RUN [ "python", "-c", "import nltk; nltk.download('punkt')" ]
+
+# 4. Finally, copy python code to image
+COPY . /home/site/wwwroot
 
 
 # ENTRYPOINT python
