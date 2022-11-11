@@ -10,16 +10,24 @@ services:
         links:
             - db
         restart: 'always'
+        networks: 
+            -   named_network
         env_file: .env
+        volumes: 
+            -   './websvc:/api'
         environment:
             SVC_HOST: 0.0.0.0
             DB_NAME: "${DB_NAME}"
             DB_USER: "${DB_USER}"
             DB_PASSWORD: "${DB_PASSWORD}"
+            AZ_FUNC_1: "${AZ_FUNC_1}"
+            FLASK_ENV: production
             DB_SERVER: db
     db:
         container_name: "newsTrends.with_mariadb_db.v1"
         image: "mariadb:latest"
+        networks:
+            -   named_network
         ports:
             - "3306:3306"
         restart: 'always'
@@ -27,3 +35,5 @@ services:
             MARIADB_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
         volumes:
             - ./data:/docker-entrypoint-initdb.d
+networks:
+    named_network:

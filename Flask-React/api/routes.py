@@ -20,7 +20,7 @@ def get_all():
 
 
 @routes.get('/word-frequency')
-def get_word_freq():
+def get_word_freq(websites=None):
     try: 
         if not request.args.getlist('websites'):
             return make_response(jsonify({'error': "JSON Incorrect"}), 400)

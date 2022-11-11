@@ -4,8 +4,11 @@ from models import db
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
+from routes import get_word_freq
 
 
+def test_sched():
+    get_word_freq('bbc')
 
 def database_uri() -> str:
     database_str = "mariadb+mariadbconnector"
@@ -20,7 +23,6 @@ def database_uri() -> str:
 
 def create_app(test_config:dict = {}):
     app = Flask(__name__)
-
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///nta.db'
     # app.config['SQLALCHEMY_DATABASE_URI'] = database_uri()
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

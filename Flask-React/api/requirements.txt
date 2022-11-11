@@ -6,3 +6,4 @@ flask-jwt-extended
 validators
 flask_sqlalchemy
 flask-cors
+apscheduler
