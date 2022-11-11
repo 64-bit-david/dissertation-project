@@ -18,16 +18,9 @@ def fetch_html(url):
     A function that returns the html of a webpage using headless chrome
     """
 
-
     chrome = headless_chrome.HeadlessChrome()
-
     page_source = chrome.get(url)
-    with open('page_markup.html', 'w', encoding='utf-8') as file:
-        file.write(page_source)
-
     chrome.quit()
-    
-
     return page_source
 
 
@@ -49,7 +42,6 @@ def get_header_tags(web_page_markup, site_name):
         for headline in headline_elements:
             stories_text += headline.text + " "
             # print(headline)
-    
     return stories_text
     
 

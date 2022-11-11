@@ -8,4 +8,5 @@ nltk
 requests
 selenium
 webdriver_manager
+packaging
 
