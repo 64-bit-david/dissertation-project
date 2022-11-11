@@ -1,12 +1,13 @@
 import React, {useState} from 'react';
 import ResultTable from './ResultTable';
-import { Form, Radio, Container, Header, Button, Icon } from 'semantic-ui-react'
+import {Container, Header, Button, Icon } from 'semantic-ui-react'
 import ResultWordCloud from './ResultWordCloud';
 import ResultBar from './ResultBar';
 import ResultPie from './ResultPie';
 import ConfirmModal from './ConfirmModal';
 import axios from '../api/axios'
 import DropDown from './DropDown';
+import { useMediaQuery } from 'react-responsive';
 
 
 
@@ -41,7 +42,17 @@ const Results = (
     const[deleteSuccess, setDeleteSuccess] = useState(false)
     const [closeFromModal, setCloseFromModal] = useState(false)
     const [resultTypeValue, setResultTypeValue] = useState('bar')
-    const [resultIsSaving, setResultIsSaving] = useState(false)
+    const [resultIsSaving, setResultIsSaving] = useState(false);
+
+
+    const isDesktopOrLaptop = useMediaQuery({
+        query: '(min-width: 1224px)'
+      })
+      const isBigScreen = useMediaQuery({ query: '(min-width: 1824px)' })
+      const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
+      const isPortrait = useMediaQuery({ query: '(orientation: portrait)' })
+      const isRetina = useMediaQuery({ query: '(min-resolution: 2dppx)' })
+
 
     const resultOptions = [
     {key: 'table', value:'table', text: 'Table'},
@@ -58,7 +69,6 @@ const Results = (
         const newArray = userResults.filter(item => item.id !== deleteId)
         setUserResults(newArray)
         setNewsData(null)
-
     }
 
     const goBackEventHandler = () => {
@@ -156,6 +166,10 @@ const Results = (
                     </>);
             }else if(websiteChoice2){
                 return(
+                    <>
+                <Container style={{margin: '3rem 0'}} textAlign='center'>
+                    <ButtonRenderHelper/>
+                </Container>
                 <div style={twoResultsTable}>
                     <ResultTable 
                         newsData={newsData[websiteChoice1]} 
@@ -167,7 +181,8 @@ const Results = (
                          newsData={newsData[websiteChoice2]} 
                          website={sites[websiteChoice2]}
                          />
-                </div>);
+                </div>
+                </>);
             }else{
                 return  <ResultTable 
                             newsData={newsData[websiteChoice1]} 
@@ -392,7 +407,7 @@ const Results = (
           <br/>
           <br/>
           <div style={{display: 'flex', justifyContent:'center'}}>
-            <div style={{width: '25vw'}} textAlign='center'>
+            <div style={{width: '60vw'}} textAlign='center'>
             <DropDown
                 fluid
                 selectOptions={resultOptions} 
@@ -404,7 +419,6 @@ const Results = (
           <br/>
           <br/>
           <br/>
-
             <RenderResultView/>
             <Container style={{margin: '3rem 0'}} textAlign='center'>
                 <ButtonRenderHelper/>

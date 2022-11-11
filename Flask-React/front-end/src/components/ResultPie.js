@@ -13,7 +13,6 @@ const ResultPie = ({newsData, website, width, height}) => {
 
     const newData = newsData.map(item => ({angle: item.count, label: item.value}))
 
-    
 
     return (
         <div>

@@ -65,7 +65,7 @@ const Home = ({
       return(
       <Container style={{ marginTop: '1em' }}>
        <Container style={{display: 'flex', justifyContent: 'center', margin: '2rem 0'}}>
-              <Header as='h5'>Select a website to find the most frequently used words in their headlines at this moment</Header>
+              <Header as='h5' textAlign="center">Select a website to find the most frequently used words in their headlines at this moment</Header>
             </Container>
         
               <DropDown
@@ -78,15 +78,18 @@ const Home = ({
     }else if(analysisValue === 'wfc'){
       return (
         <Container>
-          <div style={{ marginTop: '1em 0' }}>
-            <Container style={{display: 'flex', justifyContent: 'center', margin: '2rem 0'}}>
-              <Header as='h5'>Select websites to find the most frequently used words in their headlines at this moment</Header>
+          <div style={{ margin: '1rem 0' }}>
+            <Container textAlign="center">
+              <Header textAlign="center" as='h5'>Select websites to find the most frequently used words in their headlines at this moment</Header>
             </Container>
+          <div style={{ marginTop: '1em' }}>
+
               <DropDown
                   selectOptions={websitesOptions} 
                   selectValue={websiteChoice1}
                   setSelectValue={setWebsiteChoice1}
                   />
+          </div>
           <div style={{ marginTop: '1em' }}>
               <DropDown
                   selectOptions={websitesOptions} 

@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react'
-import {Table, Button} from 'semantic-ui-react';
+import {Table, Button, Header} from 'semantic-ui-react';
 import axios from '../api/axios';
 import ConfirmModal from './ConfirmModal';
 import Results  from './Results';
@@ -132,6 +132,7 @@ useEffect(() => {
       if(!pNewsData){
         return (
           <>
+        <Header as='h2' textAlign='center'>Your Previously Saved Results</Header>
           <Table celled textAlign='center'>
           <Table.Header>
             <Table.Row>
@@ -164,7 +165,6 @@ useEffect(() => {
            setDeleteId={setDeleteId}
            userResults={userResults}
            setUserResults={setUserResults}
-           setAnalysisValue={setPAnalysisValue}
            sites={sites}
            />
       }

@@ -25,7 +25,6 @@ const barStyles = {
   flexDirection: 'column',
   justifyContent: "center",
   alignItems: "center",
-  
 }
 
 export default ResultBar

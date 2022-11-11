@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import axios from './api/axios'
 import NavBar from './components/Navbar';
-import {Container, Header, Loader} from 'semantic-ui-react';
+import {Container, Loader} from 'semantic-ui-react';
 import Home from './components/Home';
 import Results from './components/Results';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -106,7 +106,11 @@ function App() {
     }else if(loading && !newsData){
       return(
         <Loader active>
-          Collecting data... {!currentUser && <><br/><br/><>Why not sign in while you wait?</></>}
+          Collecting data... 
+          <br/>
+          Please allow for up to 15 seconds for this process to complete...
+          <br/>
+          {!currentUser && <><br/><>Why not sign in while you wait?</></>}
         </Loader>
       )
     }else{

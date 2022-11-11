@@ -1,11 +1,10 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { Dropdown, Form } from 'semantic-ui-react'
 
 
     
 const DropDown = ({selectOptions, selectValue, setSelectValue,}) => {
 
-   
 
     const handleSelectedOption = (e, data) => {
       setSelectValue(data.value)
@@ -14,7 +13,7 @@ const DropDown = ({selectOptions, selectValue, setSelectValue,}) => {
     return (
       <Form >
         <div style={{display: 'flex', justifyContent:'center'}}>
-          <div style={{width: '25vw'}} textAlign='center'>
+          <div style={{width: '60vw'}} textAlign='center'>
             <Dropdown
               floating
               selection

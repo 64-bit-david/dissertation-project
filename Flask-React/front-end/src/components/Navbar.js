@@ -1,4 +1,4 @@
-import {Menu, Modal, Container, Icon, Button} from 'semantic-ui-react';
+import {Menu, Modal, Container, Icon, Button, Header} from 'semantic-ui-react';
 import {useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 
@@ -20,13 +20,15 @@ function NavBar(
     const [activeItem, setActiveItem] = useState('home')
     const [signOutModalActive, setSignOutModalActive ] = useState(false)
     const [signOutModalSuccess, setSignOutModalSuccess] = useState(false)
+    const [aboutModalActive, setAboutModalActive] = useState(false)
     const [signOutError, setSignOutError] = useState(false)
 
 
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+
     const handleItemClick = (e) => {
-        setActiveItem(e)
+        setActiveItem(e);
     }
 
     const handleLogInClick = () => {
@@ -91,6 +93,55 @@ function NavBar(
 
                  />
             )
+        }
+    }
+
+    const AboutModal = () => {
+        if(aboutModalActive){
+            return(
+                <Modal
+                onClose={() => {
+                    aboutModalActive(false)
+                }}
+                open={aboutModalActive}
+                size='tiny'
+                style={{padding: '2rem 0'}}
+                >
+                    <Container textAlign='center' style={{margin: '2rem 0'}}>
+                        <Modal.Header as='h2'>
+                            About
+                        </Modal.Header>
+
+                        <Header as='h3'>Welcome to the News Trends Analyser!</Header>
+
+                        <br/>
+
+
+                        <p style={pStyle}>
+                            This website allows you to generate a visualisation of the most
+                            common words in the headlines of either one or two well known news websites.
+                        </p>
+                        <p style={pStyle}>
+                            From the homepage select the Word Frequency option to view the most common headline words of a single website.
+                        </p>
+                        <p style={pStyle}>
+                            Select the Word Frequency Compare option to view the most common headline words of two websites
+                            so you may analysis any differences.
+                        </p>
+                        <p style={pStyle}>
+                            Register an account and log in to save the results you generate,
+                            and access these saved results in the previous results section.
+                        </p>
+
+                        <Button
+                            primary
+                            onClick={() => {
+                                setAboutModalActive(false)
+                            }}
+                        >Close</Button>
+                      
+                    </Container>
+                </Modal>)
         }
     }
 
@@ -166,7 +217,7 @@ function NavBar(
 
     return (
         <>
-        <Menu pointing secondary>
+        <Menu pointing secondary color='blue' inverted>
         <Menu.Item
             name='home'
             as={Link}
@@ -174,18 +225,31 @@ function NavBar(
             active={activeItem === 'home'}
             onClick={()=>handleItemClick('home')}
         />
-        
         <PreviousResults/>
+        <Menu.Item
+             name='about'
+             active={activeItem === 'about'}
+             onClick={()=>setAboutModalActive(!aboutModalActive)}
+             />
         <Menu.Menu position='right'>
             <AuthButtons />
         </Menu.Menu>
         </Menu>
         <SignOutModal />
+        <AboutModal/>
         </>
 
     )
 
 }
+
+
+const pStyle = {
+    padding: '0 20px'
+}
+
+
+
 
 
 export default NavBar;
