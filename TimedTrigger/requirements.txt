@@ -1,0 +1,9 @@
+# DO NOT include azure-functions-worker in this file
+# The Python Worker is managed by Azure Functions platform
+# Manually managing azure-functions-worker may cause unexpected issues
+
+SQLAlchemy>=1.4
+azure-functions>=1.8
+mariadb>=1
+pytest>=6
+requests
