@@ -2,7 +2,7 @@ import json
 from flask import Blueprint, jsonify, request, Response, make_response
 import requests
 import os
-from models import User, Word_Frequency, db
+from models import User, Word_Frequency, db, HourlyWordFrequency
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, jwt_required
 from datetime import datetime
 from constants import news_sites
@@ -137,6 +137,16 @@ def get_frequencies():
     except:
         return make_response(jsonify({'error': "Internal server error. Something went wrong..."}), 500)
 
+import logging
+@routes.get('/historical-results')
+def get_24hour_results():
+    data = HourlyWordFrequency.query.all()
+    res = {}
+    print(len(data))
+    for item in data:
+        key_value = item.website + '-' + str(item.hour)
+        res[key_value] = item.word_frequency
+    return make_response(jsonify(res))
 
 
 

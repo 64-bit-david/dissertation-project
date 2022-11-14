@@ -30,3 +30,15 @@ class Word_Frequency(db.Model):
     updated_at=db.Column(db.DateTime)
 
 
+class HourlyWordFrequency(db.Model):
+   __tablename__ = 'wf24'
+   id = db.Column(db.Integer, primary_key=True)
+   website=db.Column(db.String(length=100))
+   word_frequency = db.Column(db.JSON, nullable=True)
+   updated_at= db.Column(db.TIMESTAMP, nullable=True)
+   hour = db.Column(db.Integer)
+
+    
+
+
+
