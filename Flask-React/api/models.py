@@ -38,7 +38,5 @@ class HourlyWordFrequency(db.Model):
    updated_at= db.Column(db.TIMESTAMP, nullable=True)
    hour = db.Column(db.Integer)
 
-    
-
 
 

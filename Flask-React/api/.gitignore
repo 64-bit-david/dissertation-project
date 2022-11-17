@@ -1,0 +1,7 @@
+.env
+.flaskenv
+__pychache__
+__queuestorage__
+.pytest_cache__
+constants/__pychache__
+tests/__pychache__

@@ -8,9 +8,18 @@ from datetime import datetime
 from constants import news_sites
 import ast
 import traceback
+from collections import Counter
+
+
 
 routes=Blueprint('/', __name__, url_prefix='/api/v1')
 auth=Blueprint('auth', __name__, url_prefix='/api/v1/auth')
+
+
+
+
+def helper_counter(data):
+    pass
 
 # Azure Function Routes
 
@@ -25,8 +34,8 @@ def get_word_freq(websites=None):
         if not request.args.getlist('websites'):
             return make_response(jsonify({'error': "JSON Incorrect"}), 400)
         websites = request.args.getlist('websites')
-        print(websites)
-        az_func_url = os.environ.get('AZ_FUNC_1')
+        # az_func_url = os.environ.get('AZ_FUNC_1')
+        az_func_url = 'http://localhost:7071/api/HttpTrigger'
         for i, website in enumerate(websites):
             if website not in news_sites.sites:
                 return make_response(jsonify({'error': f"Incorrect parameters. The website '{website}' is not currently supported "}), 400)
@@ -34,7 +43,6 @@ def get_word_freq(websites=None):
                 az_func_url += '?websites=' + website
             else:
                 az_func_url += '&websites=' + website
-        
         res = requests.get(az_func_url)
         if(res.status_code != 200):
             print(res.text)
@@ -137,16 +145,38 @@ def get_frequencies():
     except:
         return make_response(jsonify({'error': "Internal server error. Something went wrong..."}), 500)
 
-import logging
+
+
 @routes.get('/historical-results')
 def get_24hour_results():
     data = HourlyWordFrequency.query.all()
-    res = {}
-    print(len(data))
+    res = {'bbc': {}, 'cnn': {},'fox': {},'msnbc': {},'guardian': {},'daily_mail': {}}
+    word_frequencies_unordered = {}
+    
+    
+    # updates res object with word frequency data,
+    # each website will have count for each unique word
     for item in data:
-        key_value = item.website + '-' + str(item.hour)
-        res[key_value] = item.word_frequency
+        if not item.word_frequency:
+            continue
+        for word_freq in item.word_frequency:
+            if word_freq['value'] not in res[item.website]:
+                res[item.website][word_freq['value']] = word_freq['count']
+            else:
+                res[item.website][word_freq['value']] += word_freq['count']
+
+    for website in res.keys():
+        # res[website] = res[website].items()
+        res[website] = list(res[website].items())
+
+    # res = list(res.items())
+    # res = res.items()
+
+    print(res)
     return make_response(jsonify(res))
+
+
+
 
 
 
@@ -157,7 +187,6 @@ def get_saved_word_frequency(result_id):
         wf = Word_Frequency.query.filter_by(id=result_id).first()
         if not wf:
             return make_response(jsonify({'error': 'Resource does not exist'}), 400)
-        print(wf)
         wf_list_1 = ast.literal_eval(wf.word_count_1)
         res_data = {wf.website_1: wf_list_1}  
         if wf.website_2:
@@ -171,6 +200,7 @@ def get_saved_word_frequency(result_id):
         return make_response(jsonify(res_data), 200)
     except:
         return make_response(jsonify({'error': 'Username does not exist'}), 400)
+        
 
     
 # Auth Routes
@@ -201,15 +231,10 @@ def sign_up():
 
 @auth.post('/login')
 def login():
-
-
     try: 
         username=request.json['username']
         password=request.json['password']
-    
-
         user = User.query.filter_by(username=username).first()
-
         if user:
             if user.password_match(password):
                 access_token = create_access_token(identity=user.id)
