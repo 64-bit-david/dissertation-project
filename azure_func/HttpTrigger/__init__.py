@@ -64,6 +64,8 @@ def headline_filter(headlines, count=0):
     # So recursively calling it once will ensure they are removed
     if count < 1:
         filtered_words = headline_filter(filtered_words, 1)
+    print(filtered_words.strip)
+    
     return filtered_words.strip()
 
 
@@ -87,8 +89,9 @@ def word_frequency(website):
     markup = fetch_html(news_site_scrape_data.websites[website])
     headlines = get_header_tags(markup, website)
     filtered_headlines = headline_filter(headlines)
-    counted_words = word_counter(filtered_headlines)
-    return counted_words
+    # counted_words = word_counter(filtered_headlines)
+    # return counted_words
+    return filtered_headlines
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
