@@ -13,17 +13,16 @@ def test_sched():
 def database_uri() -> str:
     database_str = "mariadb+mariadbconnector"
     db_uri = database_str + "://"
-    db_uri += os.environ.get("DB_USER", default="none") + ":"
-    db_uri += os.environ.get("DB_PASSWORD", default="none") + "@"
+    db_uri += os.environ.get("DB_USER", default="webapp") + ":"
+    db_uri += os.environ.get("DB_PASSWORD", default="testp") + "@"
     db_uri += os.environ.get("DB_SERVER", default="127.0.0.1") + ":"
     db_uri += os.environ.get("DB_PORT", default="3306") + "/"
-    db_uri += os.environ.get("DB_NAME", default="mydb")
+    db_uri += os.environ.get("DB_NAME", default="TRENDSDB")
     return db_uri
 
 
 def create_app(test_config:dict = {}):
     app = Flask(__name__)
-    # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///nta.db'
     app.config['SQLALCHEMY_DATABASE_URI'] = database_uri()
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
@@ -51,4 +50,4 @@ if __name__ == '__main__':
     app = create_app()
     svc_host = os.environ.get("SVC_HOST", default=None)
     print(svc_host)
-    app.run(debug=True, host=svc_host)
+    app.run(debug=True, host=svc_host, threaded=True)

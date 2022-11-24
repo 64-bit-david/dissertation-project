@@ -22,11 +22,11 @@ class Word_Frequency(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id=db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     website_1=db.Column(db.Text)
-    word_count_1 = db.Column(db.JSON, nullable=True)
+    word_count_1 = db.Column(db.Text, nullable=True)
     website_2=db.Column(db.Text)
-    word_count_2 = db.Column(db.JSON, nullable=True)
+    word_count_2 = db.Column(db.Text, nullable=True)
     website_3=db.Column(db.Text)
-    word_count_3 = db.Column(db.JSON, nullable=True)
+    word_count_3 = db.Column(db.Text, nullable=True)
     updated_at=db.Column(db.DateTime)
 
 
@@ -34,7 +34,7 @@ class HourlyWordFrequency(db.Model):
    __tablename__ = 'wf24'
    id = db.Column(db.Integer, primary_key=True)
    website=db.Column(db.String(length=100))
-   word_frequency = db.Column(db.JSON, nullable=True)
+   word_frequency = db.Column(db.Text, nullable=True)
    updated_at= db.Column(db.TIMESTAMP, nullable=True)
    hour = db.Column(db.Integer)
 
