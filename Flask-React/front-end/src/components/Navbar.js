@@ -227,6 +227,13 @@ function NavBar(
         />
         <PreviousResults/>
         <Menu.Item
+            name='historicalHome'
+            as={Link}
+            to='/historical-results'
+            active={activeItem === 'historicalHome'}
+            onClick={()=>handleItemClick('historicalHome')}
+        />
+        <Menu.Item
              name='about'
              active={activeItem === 'about'}
              onClick={()=>setAboutModalActive(!aboutModalActive)}

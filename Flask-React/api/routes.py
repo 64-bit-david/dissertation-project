@@ -9,13 +9,25 @@ from constants import news_sites
 import ast
 import traceback
 from collections import Counter
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
 
 
 
 routes=Blueprint('/', __name__, url_prefix='/api/v1')
 auth=Blueprint('auth', __name__, url_prefix='/api/v1/auth')
 
+@routes.get('/sentiment')
+def sent_test():
+    text = request.json['words']
+    res = helper_sentimement_analyser(text)
+    return make_response(res, 200)
 
+
+def helper_sentimement_analyser(plain_text):
+    sent_analyser = SentimentIntensityAnalyzer()
+    sent_score = sent_analyser.polarity_scores(plain_text)
+    return sent_score
 
 
 def helper_word_counter(text):
@@ -25,7 +37,6 @@ def helper_word_counter(text):
 
     tokens = [t for t in text.split()]
     counts = Counter(tokens)
-    #Needs to be in this format for react word cloud module to work
     result = [{'value': key, 'count': count} for key, count in counts.most_common(50)]
     return result
 
@@ -40,7 +51,7 @@ def get_all():
 @routes.get('/word-frequency')
 def get_word_freq(websites=None):
     # helper function to build url? If only used once maybe not but will help with testing...
-    try: 
+    # try: 
         if not request.args.getlist('websites'):
             return make_response(jsonify({'error': "JSON Incorrect"}), 400)
         websites = request.args.getlist('websites')
@@ -58,14 +69,16 @@ def get_word_freq(websites=None):
         # Call the function with the url params
         func_response = requests.get(az_func_url)
         func_response_dict = json.loads(func_response.text)
-
         # Need to send the uncounted words to the client so the client can post the uncounted words to the post request if the user chooses to save their results
-        res = {"counted": {}, "uncounted": func_response_dict}
+        res = {"counted": {}, "uncounted": func_response_dict, "sentiment": {}}
         
         for key in func_response_dict:
+            # count the individual words for each website
             counted_words = helper_word_counter(func_response_dict[key])
             res["counted"][key] = counted_words
-        
+            #get the sentiment of the words
+            sentiment_intensty = helper_sentimement_analyser(func_response_dict[key])
+            res['sentiment'][key] = sentiment_intensty
         print(res)
 
         if(func_response.status_code != 200):
@@ -73,9 +86,46 @@ def get_word_freq(websites=None):
 
         return make_response(res, func_response.status_code)
 
-    except Exception:
-        traceback.print_exc() 
+    # except Exception:
+    #     traceback.print_exc() 
+    #     return make_response(jsonify({'error': "Internal server error. Something went wrong..."}), 500)
+
+
+
+@routes.get('/historical-results')
+def get_24hour_results():
+    try:
+        if not request.args.getlist('websites'):
+            return make_response(jsonify({'error': "JSON Incorrect"}), 400)
+        websites = request.args.getlist('websites')
+        if len(websites) > 3:
+            return make_response(jsonify({'error': "Bad Request. This endpoint currently accepts a maximum of 3 'websites' url parameters"}), 400)
+        # words_list_websites = {'bbc': "", 'cnn': "",'fox': "",'msnbc': "",'guardian': "",'daily_mail': ""}
+        words_list_websites = {}
+
+        for site in websites:
+            data = HourlyWordFrequency.query.filter_by(website=site).all()
+            for item in data:
+                if not item.word_frequency:
+                    continue
+                words = item.word_frequency
+                if site not in words_list_websites:
+                    words_list_websites[site] = words
+                else:
+                    words_list_websites[site] += words
+
+        res = {"counted": {}, "sentiment": {}}
+        for website in words_list_websites:
+            plain_text_words = words_list_websites[website]
+            counted_words = helper_word_counter(plain_text_words)
+            res['counted'][website] = counted_words
+            sentiment_intensity = helper_sentimement_analyser(plain_text_words)
+            res['sentiment'][website] = sentiment_intensity        
+        
+        return make_response(jsonify(res), 200)
+    except:
         return make_response(jsonify({'error': "Internal server error. Something went wrong..."}), 500)
+
 
 
 # Database Routes
@@ -169,29 +219,6 @@ def get_frequencies():
 
 
 
-@routes.get('/historical-results')
-def get_24hour_results():
-    try:
-        data = HourlyWordFrequency.query.all()
-        words_list_websites = {'bbc': "", 'cnn': "",'fox': "",'msnbc': "",'guardian': "",'daily_mail': ""}
-        res_counted_words = {'bbc': None, 'cnn': None, 'fox': None, 'msnbc': None,'guardian': None,'daily_mail': None}
-        word_frequencies_unordered = {}
-
-        # updates res object with word frequency data,
-        # each website will have count for each unique word
-        for item in data:
-            if not item.word_frequency:
-                continue
-            words = item.word_frequency
-            words_list_websites[item.website] += words
-
-        for item in res_counted_words:
-            res_counted_words[item] = helper_word_counter(words_list_websites[item])
-
-        return make_response(jsonify(res_counted_words))
-    except:
-        return make_response(jsonify({'error': "Internal server error. Something went wrong..."}), 500)
-
 
 
 
@@ -202,10 +229,18 @@ def get_24hour_results():
 @jwt_required()
 def get_saved_word_frequency(result_id):
     # try:
+
         wf = Word_Frequency.query.filter_by(id=result_id).first()
         if not wf:
             return make_response(jsonify({'error': 'Resource does not exist'}), 400)
         # wf_list_1 = ast.literal_eval(wf.word_count_1)
+        # res = {"counted": {}, "uncounted": func_response_dict, "sentiment": {}}
+        websites = [wf.website_1]
+        if(wf.website_2):
+            websites.append(wf.website_2)
+        if(wf.website_3):
+            websites.append(wf.website_3)
+
         website_1_words_counted = helper_word_counter(wf.word_count_1)
         res_data = {wf.website_1: website_1_words_counted}  
         if wf.website_2:

@@ -61,7 +61,7 @@ const HomePage = ({
       .then(data => {
         console.log(data.counted)
         setLoading(false)
-        setNewsData(data)
+        setNewsData(data.counted)
         setRawNewsData(data.uncounted)
       })
       .catch(err => {

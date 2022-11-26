@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import ResultTable from './ResultTable';
 import {Container, Header, Button, Icon } from 'semantic-ui-react'
 import ResultWordCloud from './ResultWordCloud';
@@ -7,6 +7,7 @@ import ResultPie from './ResultPie';
 import ConfirmModal from './ConfirmModal';
 import axios from '../api/axios'
 import DropDown from './DropDown';
+import RangeSlider from './RangeSlider';
 import { useMediaQuery } from 'react-responsive';
 
 
@@ -14,6 +15,8 @@ import { useMediaQuery } from 'react-responsive';
 const Results = (
                 {newsData,
                  setNewsData, 
+                 rawNewsData,
+                 setRawNewsData,
                  websiteChoice1, 
                  websiteChoice2, 
                  websiteChoice3, 
@@ -23,9 +26,12 @@ const Results = (
                  setWebsiteChoice2,
                  setWebsiteChoice3,
                  currentUser,
+                 setHNewsData,
                  setCurrentUser,
                  isSavedResult,
-                 setIsSavedResult, 
+                 setIsSavedResult,
+                 isHistoricalResult,
+                 setIsHistoricalResult, 
                  deleteId,
                  setDeleteId,
                  userResults,
@@ -43,6 +49,7 @@ const Results = (
     const [closeFromModal, setCloseFromModal] = useState(false)
     const [resultTypeValue, setResultTypeValue] = useState('bar')
     const [resultIsSaving, setResultIsSaving] = useState(false);
+    const [numOfWords, setNumOfWords] = useState(0)
 
 
     const isDesktopOrLaptop = useMediaQuery({
@@ -62,22 +69,34 @@ const Results = (
 
     ]
 
+    console.log(newsData)
 
+    // allows the numOfWords to be changed without reendering he whole page
+    useEffect(() => {
+        if(resultTypeValue === 'bar') setNumOfWords(12)
+        if(resultTypeValue === 'pie') setNumOfWords(12)
+        if(resultTypeValue === 'table') setNumOfWords(20)
+        if(resultTypeValue === 'cloud') setNumOfWords(60)
 
+    }, [resultTypeValue])
+    
 
     if(closeFromModal){
         const newArray = userResults.filter(item => item.id !== deleteId)
         setUserResults(newArray)
         setNewsData(null)
+        setRawNewsData(null)
     }
 
     const goBackEventHandler = () => {
         setNewsData(null)
+        setRawNewsData(null)
         setAnalysisValue(null)
         setWebsiteChoice1(null)
         setWebsiteChoice2(null)
         setWebsiteChoice3(null)
         setIsSavedResult(false)
+        setIsHistoricalResult(false)
     }
 
     const deleteResultHandler = () => {
@@ -99,20 +118,23 @@ const Results = (
         setResultIsSaving(true)
         const createReqBody = () => {
             const body = {}
+            console.log('###')
+            console.log(rawNewsData)
+            console.log('###')
             if(!websiteChoice2 && !websiteChoice3){
-                body['word_frequencies_1'] = newsData[websiteChoice1]
+                body['word_frequencies_1'] = rawNewsData[websiteChoice1]
                 body['website_1'] = websiteChoice1
             }else if(websiteChoice1 && websiteChoice2 && !websiteChoice3){
-                    body['word_frequencies_1'] = newsData[websiteChoice1]
+                    body['word_frequencies_1'] = rawNewsData[websiteChoice1]
                     body['website_1'] = websiteChoice1
-                    body['word_frequencies_2'] = newsData[websiteChoice2]
+                    body['word_frequencies_2'] = rawNewsData[websiteChoice2]
                     body['website_2'] = websiteChoice2
             }else {
-                body['word_frequencies_1'] = newsData[websiteChoice1]
+                body['word_frequencies_1'] = rawNewsData[websiteChoice1]
                 body['website_1'] = websiteChoice1
-                body['word_frequencies_2'] = newsData[websiteChoice2]
+                body['word_frequencies_2'] = rawNewsData[websiteChoice2]
                 body['website_2'] = websiteChoice2
-                body['word_frequencies_3'] = newsData[websiteChoice3]
+                body['word_frequencies_3'] = rawNewsData[websiteChoice3]
                 body['website_3'] = websiteChoice3
             }
             return body
@@ -130,12 +152,19 @@ const Results = (
              body: JSON.stringify(createReqBody())
         }
 
-        fetch(postDataUrl, reqOptions)
-            .then(res => res)
-            .then(data => {
+        // fetch(postDataUrl, reqOptions)
+        //     .then(res => res)
+        //     .then(data => {
+        //         setSaved(true)
+        //         setResultIsSaving(false)
+        //     })
+
+
+
+                // DELETE!!!
                 setSaved(true)
                 setResultIsSaving(false)
-            })
+                console.log(JSON.stringify(createReqBody()))
 
 
     }
@@ -145,23 +174,29 @@ const Results = (
 
 
     const RenderResultView = () => {
-        if (resultTypeValue == 'table'){
+        if (resultTypeValue === 'table'){
             if(websiteChoice3){
                 return(
                     <>
                         <ResultTable 
-                            newsData={newsData[websiteChoice1]} 
+                            newsData={newsData['counted'][websiteChoice1]} 
+                            sentimentData={newsData['sentiment'][websiteChoice1]} 
                             website={sites[websiteChoice1]}
+                            numOfWords={numOfWords}
                         />
                         <br/>
                         <ResultTable
-                            newsData={newsData[websiteChoice2]} 
+                            newsData={newsData['counted'][websiteChoice2]} 
+                            sentimentData={newsData['sentiment'][websiteChoice2]} 
                             website={sites[websiteChoice2]}
+                            numOfWords={numOfWords}
                          />
                         <br/>
                         <ResultTable
-                            newsData={newsData[websiteChoice3]} 
+                            newsData={newsData['counted'][websiteChoice3]} 
+                            sentimentData={newsData['sentiment'][websiteChoice3]}
                             website={sites[websiteChoice3]}
+                            numOfWords={numOfWords}
                          />
                     </>);
             }else if(websiteChoice2){
@@ -170,60 +205,80 @@ const Results = (
                 <Container style={{margin: '3rem 0'}} textAlign='center'>
                     <ButtonRenderHelper/>
                 </Container>
+
                 <div style={twoResultsTable}>
                     <ResultTable 
-                        newsData={newsData[websiteChoice1]} 
+                        newsData={newsData['counted'][websiteChoice1]} 
+                        sentimentData={newsData['sentiment'][websiteChoice1]}
                         website={sites[websiteChoice1]}
-                       
+                        numOfWords={numOfWords}
                         />
                     <br/>
                     <ResultTable
-                         newsData={newsData[websiteChoice2]} 
+                         newsData={newsData['counted'][websiteChoice2]} 
+                         sentimentData={newsData['sentiment'][websiteChoice2]}
                          website={sites[websiteChoice2]}
+                         numOfWords={numOfWords}
                          />
                 </div>
                 </>);
             }else{
                 return  <ResultTable 
-                            newsData={newsData[websiteChoice1]} 
+                            newsData={newsData['counted'][websiteChoice1]} 
+                            sentimentData={newsData['sentiment'][websiteChoice1]}
                             website={sites[websiteChoice1]}
+                            numOfWords={numOfWords}
                         />
             } 
         }
-        if (resultTypeValue == 'cloud'){
+        if (resultTypeValue === 'cloud'){
             if(websiteChoice3 ){
                 return(
                     <>
                         <ResultWordCloud
-                             newsData={newsData[websiteChoice1]} 
+                             newsData={newsData['counted'][websiteChoice1]} 
+                             sentimentData={newsData['sentiment'][websiteChoice1]}
                              website={sites[websiteChoice1]}/>
+                             numOfWords={numOfWords}
                         <br />
                         <ResultWordCloud 
-                                newsData={newsData[websiteChoice2]}
-                                website={sites[websiteChoice2]}/>
+                                newsData={newsData['counted'][websiteChoice2]} 
+                                sentimentData={newsData['sentiment'][websiteChoice2]}
+                                website={sites[websiteChoice2]}
+                                numOfWords={numOfWords}
+                                />
                         <br />
                         <ResultWordCloud 
-                            newsData={newsData[websiteChoice3]} 
-                            website={sites[websiteChoice3]}
+                                newsData={newsData['counted'][websiteChoice3]} 
+                                sentimentData={newsData['sentiment'][websiteChoice3]}
+                                website={sites[websiteChoice3]}
+                                numOfWords={numOfWords}
                             />
                     </>);
             }else if(websiteChoice2){
                 return(
                 <div style={twoResultsCloud}>
                     <ResultWordCloud 
-                        newsData={newsData[websiteChoice1]} 
+                        newsData={newsData['counted'][websiteChoice1]} 
+                        sentimentData={newsData['sentiment'][websiteChoice1]}
                         website={sites[websiteChoice1]}
+                        numOfWords={numOfWords}
                         />
                     <br />
                     <ResultWordCloud 
-                        newsData={newsData[websiteChoice2]} 
+                        newsData={newsData['counted'][websiteChoice2]} 
+                        sentimentData={newsData['sentiment'][websiteChoice2]}
                         website={sites[websiteChoice2]} 
+                        numOfWords={numOfWords}
                         />
                 </div>);
             }else{
                 return   <ResultWordCloud
-                            newsData={newsData[websiteChoice1]}
-                            website={sites[websiteChoice1]}/>
+                            newsData={newsData['counted'][websiteChoice1]} 
+                            sentimentData={newsData['sentiment'][websiteChoice1]}
+                            website={sites[websiteChoice1]}
+                            numOfWords={numOfWords}
+                         />
             } 
         }
         if (resultTypeValue == 'bar'){
@@ -231,24 +286,30 @@ const Results = (
                 return(
                     <>
                         <ResultBar 
-                            newsData={newsData[websiteChoice1]} 
+                            newsData={newsData['counted'][websiteChoice1]} 
+                            sentimentData={newsData['sentiment'][websiteChoice1]}
                             website={sites[websiteChoice1]}
                             width={800}
                             height={400} 
+                            numOfWords={numOfWords}
                             />
                         <br />
                         <ResultBar
-                             newsData={newsData[websiteChoice2]} 
+                             newsData={newsData['counted'][websiteChoice2]} 
+                             sentimentData={newsData['sentiment'][websiteChoice2]} 
                              website={sites[websiteChoice2]}
                              width={800}
                              height={400} 
+                             numOfWords={numOfWords}
                              />
                         <br />
                         <ResultBar 
-                            newsData={newsData[websiteChoice3]} 
+                            newsData={newsData['counted'][websiteChoice3]} 
+                            sentimentData={newsData['sentiment'][websiteChoice3]}
                             website={sites[websiteChoice3]}
                             width={800}
                             height={400} 
+                            numOfWords={numOfWords}
                             />
 
                     </>);
@@ -257,25 +318,31 @@ const Results = (
                 return(
                 <div style={twoResultsBar}>
                     <ResultBar 
-                        newsData={newsData[websiteChoice1]} 
+                        newsData={newsData['counted'][websiteChoice1]} 
+                        sentimentData={newsData['sentiment'][websiteChoice1]}
                         website={sites[websiteChoice1]}
                         height={300}
                         width={600} 
+                        numOfWords={numOfWords}
                         />
                     <br />
                     <ResultBar 
-                        newsData={newsData[websiteChoice2]} 
+                        newsData={newsData['counted'][websiteChoice2]} 
+                        sentimentData={newsData['sentiment'][websiteChoice2]}
                         website={sites[websiteChoice2]}
                         height={300}
                         width={600} 
+                        numOfWords={numOfWords}
                         />
                     </div>);
             }else{
                 return   <ResultBar 
-                            newsData={newsData[websiteChoice1]} 
+                            newsData={newsData['counted'][websiteChoice1]} 
+                            sentimentData={newsData['sentiment'][websiteChoice1]}
                             website={sites[websiteChoice1]}
                             width={800}
                             height={400} 
+                            numOfWords={numOfWords}
                             />
             } 
         }
@@ -284,24 +351,30 @@ const Results = (
                 return(
                     <>
                         <ResultPie 
-                            newsData={newsData[websiteChoice1]} 
+                            newsData={newsData['counted'][websiteChoice1]} 
+                            sentimentData={newsData['sentiment'][websiteChoice1]}
                             website={sites[websiteChoice1]}
                             height={400}
                             width={400} 
+                            numOfWords={numOfWords}
                             />
                         <br />
                         <ResultPie 
-                            newsData={newsData[websiteChoice2]} 
+                            newsData={newsData['counted'][websiteChoice2]} 
+                            sentimentData={newsData['sentiment'][websiteChoice2]}
                             website={sites[websiteChoice2]}
                             height={400}
                             width={400} 
+                            numOfWords={numOfWords}
                             />
                         <br />
                         <ResultPie 
-                            newsData={newsData[websiteChoice3]} 
+                            newsData={newsData['counted'][setWebsiteChoice3]} 
+                            sentimentData={newsData['sentiment'][websiteChoice3]} 
                             website={sites[websiteChoice3]}
                             height={400}
                             width={400} 
+                            numOfWords={numOfWords}
                             />
 
                     </>);
@@ -309,25 +382,31 @@ const Results = (
                 return(
                 <div style={resultPieStyle}>
                     <ResultPie 
-                        newsData={newsData[websiteChoice1]} 
+                        newsData={newsData['counted'][websiteChoice1]} 
+                        sentimentData={newsData['sentiment'][websiteChoice1]}
                         website={sites[websiteChoice1]}
                         height={350}
                         width={350} 
+                        numOfWords={numOfWords}
                         />
                     <br />
                     <ResultPie 
-                        newsData={newsData[websiteChoice2]} 
+                        newsData={newsData['counted'][websiteChoice2]} 
+                        sentimentData={newsData['sentiment'][websiteChoice2]}
                         website={sites[websiteChoice2]}
                         height={350}
                         width={350} 
+                        numOfWords={numOfWords}
                         />
                 </div>);
             }else{
                 return   <ResultPie 
-                                newsData={newsData[websiteChoice1]} 
+                                newsData={newsData['counted'][websiteChoice1]} 
+                                sentimentData={newsData['sentiment'][websiteChoice1]} 
                                 website={sites[websiteChoice1]}
                                 height={400}
                                 width={400} 
+                                numOfWords={numOfWords}
                                 />
             } 
         }
@@ -366,7 +445,11 @@ const Results = (
             return(
                 <Header as='h2' textAlign='center'> Previously Saved Results</Header>
             )
-       }else{
+        }else if(isHistoricalResult){
+            return(
+                <Header as='h2' textAlign='center'> Historical Results</Header>
+            )
+        }else{
             return(
                 <Header textAlign='center' as='h2'>Results</Header> 
             )
@@ -388,6 +471,11 @@ const Results = (
                      >Delete</Button>
                 </>
             )
+        }else if(isHistoricalResult){
+            return(
+                <>
+                  <Button primary onClick={()=> goBackEventHandler()}>Go Back</Button>
+                </>)
         }else{
             return(
                 <>
@@ -401,8 +489,7 @@ const Results = (
 
     
     return (
-        <Container style={{margin: '5rem 0'}}>
-            
+        <Container style={{margin: '5rem 0'}}>     
           <HeaderResults />
           <br/>
           <br/>
@@ -425,6 +512,7 @@ const Results = (
             </Container>
             <br/>
             <br/>
+            <RangeSlider volume={numOfWords} setVolume={setNumOfWords}/>
             <br/>
             <br/>
 
@@ -463,6 +551,7 @@ const twoResultsBar = {
     display: 'flex',
     justifyContent: 'space-around'
 }
+
 
 
 

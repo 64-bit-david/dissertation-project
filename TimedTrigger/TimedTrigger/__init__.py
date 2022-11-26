@@ -58,11 +58,26 @@ def update_db(session):
         """
         A function that updates the database with word frequencies for the present hour
         """
+
+        
         if get_num_of_rows_in_table(session) == 0:
             logging.info('No data, inserting website data...')
             init_db(session, websites.websites)
         
-        current_hour = datetime.datetime.now().hour
+        current_hour = None
+        # if running in dev env, this will populate the db much quicker
+        if os.environ.get('ENVIRONMENT') == 'development':
+            logging.info('##########')
+            logging.info('DEVELOPMENT FUNCTION CALL')
+
+            fake_hour = datetime.datetime.now().minute
+            current_hour = int(fake_hour / 60 * 24)
+            logging.info('CURRENT fake hour HOUR IS ' + str(fake_hour))
+            logging.info('CURRENT HOUR IS ' + str(current_hour))
+            logging.info('##########')
+
+        else:   
+            current_hour = datetime.datetime.now().hour
 
         # fetch data
         logging.info('Calling HTTP Trigger Function....')

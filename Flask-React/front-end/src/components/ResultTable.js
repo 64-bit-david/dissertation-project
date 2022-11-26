@@ -1,7 +1,8 @@
 import React from 'react'
 import {Table, TableBody, Header} from 'semantic-ui-react'
+import SentimentBar from './SentimentBar';
 
-const ResultTable = ({newsData, website}) => {
+const ResultTable = ({newsData, website, numOfWords, sentimentData}) => {
 
 
   return (
@@ -15,7 +16,7 @@ const ResultTable = ({newsData, website}) => {
         </Table.Row>
         </Table.Header>
       <TableBody>
-        {newsData.map((item, index)=> (
+        {newsData.slice(0, numOfWords).map((item, index)=> (
           <Table.Row key={index}>
           <Table.Cell>{item['count']}</Table.Cell>
           <Table.Cell>{item['value']}</Table.Cell>
@@ -23,6 +24,10 @@ const ResultTable = ({newsData, website}) => {
         ))}
       </TableBody>
       </Table>
+
+      <SentimentBar type={'positive'} percent={sentimentData['pos']}/>
+      <SentimentBar type={'negative'} percent={sentimentData['neg']}/>
+      <SentimentBar type={'neutral'} percent={sentimentData['neu']}/>
     </div>
   )
 }

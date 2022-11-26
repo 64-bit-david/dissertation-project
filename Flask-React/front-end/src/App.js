@@ -9,6 +9,9 @@ import PreviousResults from './components/PreviousResults';
 import LogInModal from './components/LogInModal';
 import SignUpModal from './components/SignUpModal';
 import ErrorPage from './components/ErrorPage';
+import HistoricalResults from './components/HistoricalResults';
+import HistoricalHome from './components/HistoricalHome';
+import HomePage from './components/HomePage';
 
 
 
@@ -21,6 +24,7 @@ function App() {
   
 
   const [newsData, setNewsData] = useState(null)
+  const [rawNewsData, setRawNewsData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const[errCode, setErrCode] = useState(null)
@@ -32,9 +36,11 @@ function App() {
   const [modalLogInIsOpen, setModalLogInIsOpen] = useState(false);
   const [modalSignUpIsOpen, setModalSignUpIsOpen] = useState(false);
   const[isSavedResult, setIsSavedResult] = useState(false);
+  const[isHistoricalResult, setIsHistoricalResult] = useState(false);
   const [currentUser, setCurrentUser] = useState(null)
   const [sites, setSites] = useState(null)
   const [websitesOptions, setWebsitesOptions] = useState(null)
+  const [hNewsData, setHNewsData] = useState(null)
 
   useEffect(() => {
     if(!sites){
@@ -99,8 +105,10 @@ function App() {
         setAnalysisValue={setAnalysisValue}
         setLoading={setLoading}
         setNewsData={setNewsData}
+        setRawNewsData={setRawNewsData}
         setError={setError}
         setErrCode={setErrCode}
+        setIsHistoricalResult={setIsHistoricalResult}
         />
       )
     }else if(loading && !newsData){
@@ -117,10 +125,12 @@ function App() {
       return(
         <Results 
               newsData={newsData}
+              rawNewsData={rawNewsData}
               websiteChoice1={websiteChoice1} 
               websiteChoice2={websiteChoice2} 
               websiteChoice3={websiteChoice3} 
               sites={sites} 
+              setRawNewsData={setRawNewsData}
               setNewsData={setNewsData}
               setWebsiteChoice1={setWebsiteChoice1}
               setWebsiteChoice2={setWebsiteChoice2}
@@ -130,6 +140,8 @@ function App() {
               setCurrentUser={setCurrentUser}
               isSavedResult={isSavedResult}
               setIsSavedResult={setIsSavedResult}
+              isHistoricalResult={false}
+              setIsHistoricalResult={setIsHistoricalResult}
               />
       )
     }
@@ -165,7 +177,44 @@ function App() {
                     sites={sites}
                     />
           } />
-          <Route path = '/' element={<FrontPageRenderHelper/>} />
+          <Route path = '/' 
+            element={
+              <Home
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+                analysisValue={analysisValue} 
+                setAnalysisValue={setAnalysisValue}
+                websitesOptions={websitesOptions}
+                analysisOptions={analysisOptions}
+                setIsSavedResult={setIsSavedResult}
+                setError={setError}
+                sites={sites}
+                setErrCode={setErrCode}
+                selectOptions={websitesOptions}
+                setWebsiteChoice1={setWebsiteChoice1}
+                setWebsiteChoice2={setWebsiteChoice2}
+                setWebsiteChoice3={setWebsiteChoice3}
+                websiteChoice1={websiteChoice1} 
+                websiteChoice2={websiteChoice2} 
+                websiteChoice3={websiteChoice3} 
+              />}/>
+          {/* <Route path = '/' element={<FrontPageRenderHelper/>} /> */}
+          <Route exact path = '/historical-results' 
+                    element={
+                      <HistoricalHome
+                        websitesOptions={websitesOptions}
+                        analysisOptions={analysisOptions}
+                        currentUser={currentUser}
+                        setCurrentUser={setCurrentUser}
+                        isSavedResult={false}
+                        setIsSavedResult={setIsSavedResult}
+                        isHistoricalResult={true}
+                        setIsHistoricalResult={setIsHistoricalResult}
+                        // hNewsData={hNewsData}
+                        // setHNewsData={setHNewsData}
+                        setRawNewsData={setRawNewsData}
+                        sites={sites}
+                      />} />
       </Routes>
       </Container>
       </Router>    

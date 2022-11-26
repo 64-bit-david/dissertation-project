@@ -70,6 +70,7 @@ useEffect(() => {
     }
     axios.get('/result/' + id, reqOptions)
       .then(data => {
+        console.log(data)
         setPNewsData(data.data)
         setWebsiteChoices(data.data)
         setIsSavedResult(true)
