@@ -14,13 +14,17 @@ const ResultWordCloud = ({newsData, website, numOfWords, sentimentData}) => {
   return (
           <div>
                 <Header as='h3' textAlign='center'>Word Frequency Results for {website}</Header>
-                  <TagCloud
-                    minSize={20}
-                    maxSize={60}
-                    colorOptions={options}
-                    tags={newsData.slice(0, numOfWords)}
-                  />
+                <br/>
+                <br/>
+                <TagCloud
+                  minSize={20}
+                  maxSize={60}
+                  colorOptions={options}
+                  tags={newsData.slice(0, numOfWords)}
+                />
                 <div style={{'margin': '5rem 2rem'}}>
+                  <Header as='h3' textAlign='center'>Sentiment analysis of headlines from {website}</Header>
+                  <br/>
                   <SentimentBar type={'positive'} percent={sentimentData['pos']}/>
                   <SentimentBar type={'negative'} percent={sentimentData['neg']}/>
                   <SentimentBar type={'neutral'} percent={sentimentData['neu']}/>

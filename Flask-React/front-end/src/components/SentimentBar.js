@@ -3,7 +3,6 @@ import {Progress} from 'semantic-ui-react';
 
 const SentimentBar = ({type, percent}) => {
 
-  console.log(typeof(percent))
 
 const colors = {'positive': 'green',
                 'negative': 'red',

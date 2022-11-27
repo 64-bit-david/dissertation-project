@@ -15,6 +15,10 @@ const ResultBar = ({newsData, website, height, width, numOfWords, sentimentData}
               <YAxis dataKey="count" />
             </BarChart>
             </ResponsiveContainer>
+            <br/>
+            <br/>
+            <Header as='h3' textAlign='center'>Sentiment analysis of headlines from {website}</Header>
+            <br/>
             <SentimentBar type={'positive'} percent={sentimentData['pos']}/>
             <SentimentBar type={'negative'} percent={sentimentData['neg']}/>
             <SentimentBar type={'neutral'} percent={sentimentData['neu']}/>

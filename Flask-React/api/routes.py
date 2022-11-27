@@ -234,28 +234,30 @@ def get_saved_word_frequency(result_id):
         if not wf:
             return make_response(jsonify({'error': 'Resource does not exist'}), 400)
         # wf_list_1 = ast.literal_eval(wf.word_count_1)
-        # res = {"counted": {}, "uncounted": func_response_dict, "sentiment": {}}
-        websites = [wf.website_1]
-        if(wf.website_2):
-            websites.append(wf.website_2)
-        if(wf.website_3):
-            websites.append(wf.website_3)
+        res = {"counted": {}, "uncounted": {}, "sentiment": {}}
+        res["uncounted"][wf.website_1] = wf.word_count_1
+        word_1_counted = helper_word_counter(wf.word_count_1)
+        res["counted"][wf.website_1] = word_1_counted
+        word_1_sentiment = helper_sentimement_analyser(wf.word_count_1)
+        res['sentiment'][wf.website_1] = word_1_sentiment
 
-        website_1_words_counted = helper_word_counter(wf.word_count_1)
-        res_data = {wf.website_1: website_1_words_counted}  
         if wf.website_2:
-            website_2_words_counted = helper_word_counter(wf.word_count_2)
-            res_data[wf.website_2] = website_2_words_counted
-        #     res_data[wf.website_2] = wf_list_2
-
+            res["uncounted"][wf.website_2] = wf.word_count_2
+            word_2_counted = helper_word_counter(wf.word_count_2)
+            res["counted"][wf.website_2] = word_2_counted
+            word_2_sentiment = helper_sentimement_analyser(wf.word_count_2)
+            res['sentiment'][wf.website_2] = word_2_sentiment
         if wf.website_3:
-            website_3_words_counted = helper_word_counter(wf.word_count_3)
-            res_data[wf.website_3] = website_3_words_counted
+            res["uncounted"][wf.website_3] = wf.word_count_3
+            word_3_counted = helper_word_counter(wf.word_count_3)
+            res["counted"][wf.website_3] = word_3_counted
+            word_3_sentiment = helper_sentimement_analyser(wf.word_count_3)
+            res['sentiment'][wf.website_3] = word_3_sentiment
+
 
         
 
-        return make_response(jsonify(res_data), 200)
-        # return make_response(jsonify('printed'), 200)
+        return make_response(jsonify(res), 200)
 
 
     # except:

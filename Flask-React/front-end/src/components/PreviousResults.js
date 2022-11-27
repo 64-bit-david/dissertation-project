@@ -4,7 +4,7 @@ import axios from '../api/axios';
 import ConfirmModal from './ConfirmModal';
 import Results  from './Results';
 
-const PreviousResults = ({currentUser, sites}) => {
+const PreviousResults = ({currentUser, sites, setIsHistoricalResult, setRawNewsData}) => {
 
 const [userResults, setUserResults] = useState([])
 
@@ -19,10 +19,16 @@ const[deleteId, setDeleteId] = useState(null)
 const[deleteSuccess, setDeleteSuccess] = useState(false)
 const [panalysisValue, setPAnalysisValue] = useState(null)
 
+
+
+// For assigned the text to each table result so user can better understand
 const resultTypeArray = {
         wf: 'Word Frequency',
-        wfc: 'Word Frequency Compare'}
+        wfc: 'Word Frequency Compare'
+      };
 
+
+//Get the current authenticated user's saved results
 useEffect(() => {
   const accessToken = 'Bearer ' + currentUser['access_token']
   const url = '/results'
@@ -45,14 +51,16 @@ useEffect(() => {
   }
 
 
+  // 
   const setWebsiteChoices = (data) => {
     const websites = Object.keys(data)
+    console.log(websites)
     if (websites.length > 2){
       setPWebsiteChoice1(websites[0])
       setPWebsiteChoice2(websites[1])
       setPWebsiteChoice3(websites[2])      
     }
-    else if(websites.length == 2){
+    else if(websites.length === 2){
       setPWebsiteChoice1(websites[0])
       setPWebsiteChoice2(websites[1])
     }
@@ -69,10 +77,11 @@ useEffect(() => {
       }
     }
     axios.get('/result/' + id, reqOptions)
-      .then(data => {
-        console.log(data)
-        setPNewsData(data.data)
-        setWebsiteChoices(data.data)
+      .then(res => {
+        console.log("First: " + pWebSiteChoice1)
+        console.log("Second: " + pWebSiteChoice2)
+        setWebsiteChoices(res.data.counted)
+        setPNewsData(res.data) 
         setIsSavedResult(true)
         setDeleteId(id)
       })
@@ -153,10 +162,12 @@ useEffect(() => {
         return <Results
            currentUser={currentUser}
            newsData={pNewsData}
+           rawNewsData={null}
            setNewsData={setPNewsData}
            websiteChoice1={pWebSiteChoice1}
            websiteChoice2={pWebSiteChoice2}
            websiteChoice3={pWebSiteChoice3}
+           setRawNewsData={setRawNewsData}
            setWebsiteChoice1={setPWebsiteChoice1}
            setWebsiteChoice2={setPWebsiteChoice2}
            setWebsiteChoice3={setPWebsiteChoice3}
@@ -166,7 +177,10 @@ useEffect(() => {
            setDeleteId={setDeleteId}
            userResults={userResults}
            setUserResults={setUserResults}
+           setAnalysisValue={setPAnalysisValue}
            sites={sites}
+           isHistoricalResult={false}
+           setIsHistoricalResult={setIsHistoricalResult}
            />
       }
     }

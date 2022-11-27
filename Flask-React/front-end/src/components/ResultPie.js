@@ -18,14 +18,13 @@ const ResultPie = ({newsData, website, width, height, numOfWords, sentimentData}
 
 
     return (
-        <div>
+        <div style={{margin: '0 0.5rem'}}>
         <Header as='h3' textAlign='center'>Word Frequency Results for {website}</Header>
         <div style={pieChartStyle}>
             <RadialChart
                 data={newData.slice(0, numOfWords)}
                 width={width}
                 height={height}
-                // color='green'
                 colorRange={colorArray}
                 labelsRadiusMultiplier={1.1}
                 labelsStyle={{
@@ -35,6 +34,10 @@ const ResultPie = ({newsData, website, width, height, numOfWords, sentimentData}
                 animation={{ damping: 10, stiffness: 20 }}
                 />
         </div>
+        <br/>
+        <br/>
+        <Header as='h3' textAlign='center'>Sentiment analysis of headlines from {website}</Header>
+        <br/>
         <SentimentBar type={'positive'} percent={sentimentData['pos']}/>
         <SentimentBar type={'negative'} percent={sentimentData['neg']}/>
         <SentimentBar type={'neutral'} percent={sentimentData['neu']}/>

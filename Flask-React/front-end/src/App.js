@@ -172,6 +172,8 @@ function App() {
                     currentUser={currentUser}
                     isSavedResult={isSavedResult} 
                     setIsSavedResult={setIsSavedResult}
+                    setIsHistoricalResult={setIsHistoricalResult}
+                    setRawNewsData={setRawNewsData}
                     newsData={newsData}
                     setNewsData={setNewsData}
                     sites={sites}

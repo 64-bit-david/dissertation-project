@@ -9,6 +9,8 @@ import axios from '../api/axios'
 import DropDown from './DropDown';
 import RangeSlider from './RangeSlider';
 import { useMediaQuery } from 'react-responsive';
+import { Direction } from 'react-range';
+
 
 
 
@@ -52,13 +54,11 @@ const Results = (
     const [numOfWords, setNumOfWords] = useState(0)
 
 
-    const isDesktopOrLaptop = useMediaQuery({
-        query: '(min-width: 1224px)'
-      })
-      const isBigScreen = useMediaQuery({ query: '(min-width: 1824px)' })
-      const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
-      const isPortrait = useMediaQuery({ query: '(orientation: portrait)' })
-      const isRetina = useMediaQuery({ query: '(min-resolution: 2dppx)' })
+    const isDesktopOrLaptop = useMediaQuery({query: '(min-width: 1224px)'})
+    const isBigScreen = useMediaQuery({ query: '(min-width: 1824px)' })
+    const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
+    // const isPortrait = useMediaQuery({ query: '(orientation: portrait)' })
+    const isRetina = useMediaQuery({ query: '(min-resolution: 2dppx)' })
 
 
     const resultOptions = [
@@ -69,7 +69,6 @@ const Results = (
 
     ]
 
-    console.log(newsData)
 
     // allows the numOfWords to be changed without reendering he whole page
     useEffect(() => {
@@ -152,24 +151,22 @@ const Results = (
              body: JSON.stringify(createReqBody())
         }
 
-        // fetch(postDataUrl, reqOptions)
-        //     .then(res => res)
-        //     .then(data => {
-        //         setSaved(true)
-        //         setResultIsSaving(false)
-        //     })
-
-
-
-                // DELETE!!!
+        fetch(postDataUrl, reqOptions)
+            .then(res => res)
+            .then(data => {
                 setSaved(true)
                 setResultIsSaving(false)
-                console.log(JSON.stringify(createReqBody()))
-
-
+            })
     }
 
 
+    const pieStyleHelper = () => {
+        if (isTabletOrMobile){
+            return twoResultPieStyleMobile
+        }else{
+            return twoResultPieStyle
+        }
+    }
 
 
 
@@ -336,21 +333,23 @@ const Results = (
                         />
                     </div>);
             }else{
-                return   <ResultBar 
-                            newsData={newsData['counted'][websiteChoice1]} 
-                            sentimentData={newsData['sentiment'][websiteChoice1]}
-                            website={sites[websiteChoice1]}
-                            width={800}
-                            height={400} 
-                            numOfWords={numOfWords}
-                            />
+                return  ( 
+                <ResultBar 
+                    newsData={newsData['counted'][websiteChoice1]} 
+                    sentimentData={newsData['sentiment'][websiteChoice1]}
+                    website={sites[websiteChoice1]}
+                    width={800}
+                    height={400} 
+                    numOfWords={numOfWords}
+                    />
+                    );
             } 
         }
         if (resultTypeValue == 'pie'){
             if(websiteChoice3 ){
                 return(
                     <>
-                        <ResultPie 
+                      <ResultPie 
                             newsData={newsData['counted'][websiteChoice1]} 
                             sentimentData={newsData['sentiment'][websiteChoice1]}
                             website={sites[websiteChoice1]}
@@ -380,7 +379,7 @@ const Results = (
                     </>);
             }else if(websiteChoice2){
                 return(
-                <div style={resultPieStyle}>
+                <div style={pieStyleHelper()}>
                     <ResultPie 
                         newsData={newsData['counted'][websiteChoice1]} 
                         sentimentData={newsData['sentiment'][websiteChoice1]}
@@ -400,14 +399,16 @@ const Results = (
                         />
                 </div>);
             }else{
-                return   <ResultPie 
-                                newsData={newsData['counted'][websiteChoice1]} 
-                                sentimentData={newsData['sentiment'][websiteChoice1]} 
-                                website={sites[websiteChoice1]}
-                                height={400}
-                                width={400} 
-                                numOfWords={numOfWords}
-                                />
+                return   (
+                <ResultPie 
+                    newsData={newsData['counted'][websiteChoice1]} 
+                    sentimentData={newsData['sentiment'][websiteChoice1]} 
+                    website={sites[websiteChoice1]}
+                    height={400}
+                    width={400} 
+                    numOfWords={numOfWords}
+                    />
+                )
             } 
         }
     }
@@ -489,7 +490,7 @@ const Results = (
 
     
     return (
-        <Container style={{margin: '5rem 0'}}>     
+        <Container style={{margin: '5rem 0'}}>    
           <HeaderResults />
           <br/>
           <br/>
@@ -507,12 +508,16 @@ const Results = (
           <br/>
           <br/>
             <RenderResultView/>
+            <div style={sliderContainer}>
+            <Header as='h3' textAlign='center'>Drag the button to customize the number of word shown in the visualization</Header>
+            <RangeSlider volume={numOfWords} setVolume={setNumOfWords}/>
+
+            </div>
             <Container style={{margin: '3rem 0'}} textAlign='center'>
                 <ButtonRenderHelper/>
             </Container>
             <br/>
             <br/>
-            <RangeSlider volume={numOfWords} setVolume={setNumOfWords}/>
             <br/>
             <br/>
 
@@ -531,8 +536,15 @@ const Results = (
 };
 
 
-const resultPieStyle = {
+const twoResultPieStyle = {
     display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+}
+
+const twoResultPieStyleMobile = {
+    display: 'flex',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
 }
@@ -550,6 +562,14 @@ const twoResultsCloud = {
 const twoResultsBar = {
     display: 'flex',
     justifyContent: 'space-around'
+}
+
+const sliderContainer = {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    margin: '3rem 0' 
+    // alignItems: 'center'
 }
 
 

@@ -217,7 +217,7 @@ function NavBar(
 
     return (
         <>
-        <Menu pointing secondary color='blue' inverted>
+        <Menu stackable pointing secondary color='blue' inverted>
         <Menu.Item
             name='home'
             as={Link}
