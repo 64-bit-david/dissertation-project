@@ -3,6 +3,7 @@ import DropDown from "./DropDown";
 import axios from '../api/axios';
 import { useState } from "react";
 import Results from "./Results";
+import ErrorPage from './ErrorPage';
 
 const HistoricalResults = (
                             { websitesOptions, 
@@ -56,6 +57,7 @@ const [hWebsiteChoice3, setHWebsiteChoice3] = useState(null)
         console.log(err)
         setError(true)
         setErrCode(err.response.status)
+        setLoading(false)
       })
 
     }
@@ -228,6 +230,10 @@ const HistoricalHomeRenderHelper = () => {
             setIsHistoricalResult={setIsHistoricalResult}/>
         )
     }
+    }else{
+      return(
+        <ErrorPage setState1={setHNewsData} setError={setError} errCode={errCode} setErrCode={setErrCode}/>
+      )
     }
 }
 

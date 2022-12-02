@@ -17,8 +17,8 @@ class User(db.Model):
         return check_password_hash(self.hashed_password, password)
         
         
-class Word_Frequency(db.Model):
-    __tablename__ = 'wordfrequency'
+class WebsiteData(db.Model):
+    __tablename__ = 'website_data'
     id = db.Column(db.Integer, primary_key=True)
     user_id=db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     website_1=db.Column(db.Text)
@@ -30,12 +30,13 @@ class Word_Frequency(db.Model):
     updated_at=db.Column(db.DateTime)
 
 
-class HourlyWordFrequency(db.Model):
-   __tablename__ = 'wf24'
+class WebsiteData24(db.Model):
+   __tablename__ = 'website_data_24'
    id = db.Column(db.Integer, primary_key=True)
    website=db.Column(db.String(length=100))
-   word_frequency = db.Column(db.Text, nullable=True)
+   words = db.Column(db.Text, nullable=True)
    updated_at= db.Column(db.TIMESTAMP, nullable=True)
+   updated_at= db.Column(db.TIMESTAMP, nullable=False, server_default=db.text('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))
    hour = db.Column(db.Integer)
 
 

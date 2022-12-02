@@ -2,7 +2,7 @@ import json
 from flask import Blueprint, jsonify, request, Response, make_response
 import requests
 import os
-from models import User, Word_Frequency, db, HourlyWordFrequency
+from models import User, WebsiteData, db, WebsiteData24
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, jwt_required
 from datetime import datetime
 from constants import news_sites
@@ -16,12 +16,6 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 routes=Blueprint('/', __name__, url_prefix='/api/v1')
 auth=Blueprint('auth', __name__, url_prefix='/api/v1/auth')
-
-@routes.get('/sentiment')
-def sent_test():
-    text = request.json['words']
-    res = helper_sentimement_analyser(text)
-    return make_response(res, 200)
 
 
 def helper_sentimement_analyser(plain_text):
@@ -55,9 +49,7 @@ def get_word_freq(websites=None):
         if not request.args.getlist('websites'):
             return make_response(jsonify({'error': "JSON Incorrect"}), 400)
         websites = request.args.getlist('websites')
-        # az_func_url = os.environ.get('AZ_FUNC_1')
-        az_func_url = 'https://newstrendsscraper.azurewebsites.net/api/HttpTrigger'
-        # az_func_url = 'http://localhost:7071/api/HttpTrigger'
+        az_func_url = os.environ.get('AZ_FUNC_1')
         for i, website in enumerate(websites):
             if website not in news_sites.sites:
                 return make_response(jsonify({'error': f"Incorrect parameters. The website '{website}' is not currently supported "}), 400)
@@ -94,7 +86,7 @@ def get_word_freq(websites=None):
 
 @routes.get('/historical-results')
 def get_24hour_results():
-    try:
+    # try:
         if not request.args.getlist('websites'):
             return make_response(jsonify({'error': "JSON Incorrect"}), 400)
         websites = request.args.getlist('websites')
@@ -104,11 +96,11 @@ def get_24hour_results():
         words_list_websites = {}
 
         for site in websites:
-            data = HourlyWordFrequency.query.filter_by(website=site).all()
+            data = WebsiteData24.query.filter_by(website=site).all()
             for item in data:
-                if not item.word_frequency:
+                if not item.words:
                     continue
-                words = item.word_frequency
+                words = item.words
                 if site not in words_list_websites:
                     words_list_websites[site] = words
                 else:
@@ -123,8 +115,8 @@ def get_24hour_results():
             res['sentiment'][website] = sentiment_intensity        
         
         return make_response(jsonify(res), 200)
-    except:
-        return make_response(jsonify({'error': "Internal server error. Something went wrong..."}), 500)
+    # except:
+    #     return make_response(jsonify({'error': "Internal server error. Something went wrong..."}), 500)
 
 
 
@@ -157,7 +149,7 @@ def add_frequency():
             website_3 = request.json['website_3']
             if website_3 not in news_sites.sites:
                 return make_response(jsonify({'error': f"website name '{website_3}' not valid"}), 400)
-        w_f = Word_Frequency(user_id=current_user, 
+        w_f = WebsiteData(user_id=current_user, 
                                 word_count_1=word_frequencies_1, 
                                 website_1=website_1, 
                                 updated_at=datetime.utcnow(),
@@ -182,7 +174,7 @@ def add_frequency():
 @jwt_required()
 def delete_word_frequency(result_id):
     try: 
-        result = Word_Frequency.query.filter_by(id=result_id).first()
+        result = WebsiteData.query.filter_by(id=result_id).first()
         if not result:
             return make_response(jsonify({'error': "Error: Resource not found"}), 404)
         if result.user_id != get_jwt_identity():
@@ -200,7 +192,7 @@ def delete_word_frequency(result_id):
 def get_frequencies():
     try:
         current_user = get_jwt_identity()
-        user_wf_items = Word_Frequency.query.filter_by(user_id=current_user).all()
+        user_wf_items = WebsiteData.query.filter_by(user_id=current_user).all()
         res_data = []
         if len(user_wf_items) < 1:
             return make_response(jsonify({'results': res_data}))
@@ -230,7 +222,7 @@ def get_frequencies():
 def get_saved_word_frequency(result_id):
     # try:
 
-        wf = Word_Frequency.query.filter_by(id=result_id).first()
+        wf = WebsiteData.query.filter_by(id=result_id).first()
         if not wf:
             return make_response(jsonify({'error': 'Resource does not exist'}), 400)
         # wf_list_1 = ast.literal_eval(wf.word_count_1)

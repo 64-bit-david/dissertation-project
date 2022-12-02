@@ -1,4 +1,4 @@
-from models import Word_Frequency
+from models import WebsiteData
 
 def test_created_user_fixture(created_user):
     """
@@ -15,13 +15,13 @@ def test_created_user_fixture(created_user):
 
 def test_created_word_frequency():
     """  
-    GIVEN a Word_Frequency Model
+    GIVEN a WebsiteData Model
     WHEN a new word frequency is created
     THEN check the fields are as expected
       """
     
     
-    w_f = Word_Frequency(id=5, 
+    w_f = WebsiteData(id=5, 
                         user_id = 1, 
                         website_1 = 'website1', 
                         word_count_1 = 'here is some data',

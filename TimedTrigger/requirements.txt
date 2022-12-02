@@ -4,6 +4,6 @@
 
 SQLAlchemy>=1.4
 azure-functions>=1.8
-mariadb>=1
+mariadb==1.0.4
 pytest>=6
 requests

@@ -25,7 +25,7 @@ class TestTimedTrigger(unittest.TestCase):
 
     #     # Check the database content.
     #     session = Session(TimedTrigger.__test_db_engine__)
-    #     template_data = session.query(models.HourlyWordFrequency).all()
+    #     template_data = session.query(models.WebsiteData24).all()
     #     self.assertEqual(len(template_data), 144)
    
 
@@ -35,10 +35,10 @@ class TestTimedTrigger(unittest.TestCase):
     def test_db_init(self):
         session = Session(TimedTrigger.__test_db_engine__)
         TimedTrigger.init_db(session, ["0", "1", "2", "3", "4", "5"])
-        template_data = session.query(models.HourlyWordFrequency).all()
+        template_data = session.query(models.WebsiteData24).all()
         self.assertEqual(len(template_data), 144)
      
     # def test_db(self):
     #     session = Session(TimedTrigger.__test_db_engine__)
-    #     template_data = session.query(models.HourlyWordFrequency).all()
+    #     template_data = session.query(models.WebsiteData24).all()
     #     self.assertEqual(len(template_data), 0)

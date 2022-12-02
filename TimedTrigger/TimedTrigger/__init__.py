@@ -26,11 +26,11 @@ def database_uri() -> str:
 
     url = sqlalchemy.engine.url.URL.create(
         drivername = "mariadb+mariadbconnector",
-        username = os.environ.get("DB_USER", default="none"),
-        password = os.environ.get("DB_PASSWORD", default="none"),
+        username = os.environ.get("DB_USER", default="webapp"),
+        password = os.environ.get("DB_PASSWORD", default="testp"),
         host = os.environ.get("DB_SERVER", default="127.0.0.1"),
         port = os.environ.get("DB_PORT", default="3306"),
-        database = os.environ.get("DB_NAME", default="mydb"))
+        database = os.environ.get("DB_NAME", default="TRENDSDB"))
     return str(url)
 
 
@@ -44,7 +44,6 @@ def init_db(session, list_of_websites):
                 for i in range(0, 24):
                     template_row = models.HourlyWordFrequency(
                         website=website,
-                        # word_frequency = "",
                         hour = i
                     )
                     session.add(template_row)
@@ -72,8 +71,8 @@ def update_db(session):
 
             fake_hour = datetime.datetime.now().minute
             current_hour = int(fake_hour / 60 * 24)
-            logging.info('CURRENT fake hour HOUR IS ' + str(fake_hour))
-            logging.info('CURRENT HOUR IS ' + str(current_hour))
+            logging.info('Current minute is ' + str(fake_hour))
+            logging.info('Current fake hour is ' + str(current_hour))
             logging.info('##########')
 
         else:   
@@ -93,13 +92,12 @@ def get_word_frequencies():
         """
         A function to fetch the word frequency data from the webscraper / httptrigger function
         """
-        data = requests.get(' http://localhost:7071/api/HttpTrigger?websites=bbc&websites=cnn&websites=fox&websites=msnbc&websites=guardian&websites=daily_mail')
-        # data = requests.get(' http://localhost:7071/api/HttpTrigger?websites=bbc')
+        data = requests.get('http://localhost:7071/api/HttpTrigger?websites=bbc&websites=cnn&websites=fox&websites=msnbc&websites=guardian&websites=daily_mail')
         return data.text
 
 
 def updateWordFrequency(session, hour, website, wf_data):
-        session.query(models.HourlyWordFrequency).filter(models.HourlyWordFrequency.hour==hour, models.HourlyWordFrequency.website==website).update({'word_frequency': wf_data})
+        session.query(models.HourlyWordFrequency).filter(models.HourlyWordFrequency.hour==hour, models.HourlyWordFrequency.website==website).update({'words': wf_data})
         session.commit() 
         logging.info('data added')
 

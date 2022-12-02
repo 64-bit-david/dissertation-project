@@ -9,7 +9,7 @@ const ErrorPage = ({errorCode, setState1, setState2, setState3, errCode, setErro
         <Button style={{marginTop: '3rem'}}primary onClick={() => {
                             setState1(false)
                             setError(false)
-                        }}>Back to Home</Button>
+                        }}>Go Back</Button>
         </Container>
     </div>
   )

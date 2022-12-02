@@ -17,13 +17,20 @@ def database_uri() -> str:
     db_uri += os.environ.get("DB_PASSWORD", default="testp") + "@"
     db_uri += os.environ.get("DB_SERVER", default="127.0.0.1") + ":"
     db_uri += os.environ.get("DB_PORT", default="3306") + "/"
-    db_uri += os.environ.get("DB_NAME", default="TRENDSDB")
+    db_uri += os.environ.get("DB_NAME", default="TRENDSDB") + '?'
+    db_uri += os.environ.get("SSL_CA", default="")
     return db_uri
 
 
 def create_app(test_config:dict = {}):
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = database_uri()
+    connection_args = {}
+    ssl_cert = os.environ.get("DB_SSL_CERT", default=None)
+    if ssl_cert is not None:
+        connection_args["ssl_ca"] = ssl_cert
+    if len(connection_args) > 0:
+        app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"connect_args": connection_args}
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=3)
@@ -35,7 +42,7 @@ def create_app(test_config:dict = {}):
     with app.app_context():
         db.init_app(app)
         db.create_all()
-        
+    
     JWTManager(app)
     CORS(app)
     from routes import routes, auth
