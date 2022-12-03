@@ -48,11 +48,12 @@ def get_header_tags(web_page_markup, site_name):
 
 
 
-def headline_filter(headlines, count=0):
+def remove_stopwords(headlines, count=0):
     """
-    A function that removes stopwords from a given string of many words
+    A function that removes stopwords from a given string
     """
 
+    # Get list of stopwords
     stop_words = set(stopwords.words('english'))
     word_tokens = word_tokenize(headlines)
     filtered_words = ""
@@ -63,13 +64,14 @@ def headline_filter(headlines, count=0):
     # Function misses a few stopwords when they contain uppercases
     # So recursively calling it once will ensure they are removed
     if count < 1:
-        filtered_words = headline_filter(filtered_words, 1)
+        filtered_words = remove_stopwords(filtered_words, 1)
     print(filtered_words.strip)
     
     return filtered_words.strip()
 
 
 
+# This functionality has been moved to the API but has been left for reference. Do not call it in the main function.
 def word_counter(text):
     """
     A function that counts the frequency of each word in a string  
@@ -88,7 +90,7 @@ def word_frequency(website):
     """
     markup = fetch_html(news_site_scrape_data.websites[website])
     headlines = get_header_tags(markup, website)
-    filtered_headlines = headline_filter(headlines)
+    filtered_headlines = remove_stopwords(headlines)
     # counted_words = word_counter(filtered_headlines)
     # return counted_words
     return filtered_headlines
@@ -97,7 +99,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
     # try:
     if 'websites' not in req.params:
-        return func.HttpResponse("Error: Request to function must contain URL query param to website ", status_code=400)
+        return func.HttpResponse("Error: Request to function must contain 'websites' URL query parameter ", status_code=400)
     websites = req.params['websites'].split(',')
     if len(websites) == 1:
         print('----------------------------------------------')
@@ -110,7 +112,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     
     result = {}
     for site in websites:
-        result[site] = word_frequency(site)
+        result[site] =  (site)
     result = json.dumps(result)
     print('Done. \nResults:')
     print(result)

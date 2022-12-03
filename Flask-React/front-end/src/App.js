@@ -9,7 +9,6 @@ import PreviousResults from './components/PreviousResults';
 import LogInModal from './components/LogInModal';
 import SignUpModal from './components/SignUpModal';
 import ErrorPage from './components/ErrorPage';
-import HistoricalResults from './components/HistoricalResults';
 import HistoricalHome from './components/HistoricalHome';
 import HomePage from './components/HomePage';
 

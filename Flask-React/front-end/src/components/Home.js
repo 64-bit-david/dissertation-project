@@ -197,7 +197,8 @@ const HomePageRenderHelper = () => {
                         selectValue={analysisValue}
                         setSelectValue={setAnalysisValue} />
                     </Container>
-                    <DropDownWebsites />
+                    {websitesOptions ?     <DropDownWebsites /> : <Header textAlign="center"> Error: No website data could be retrieved. Please try again.</Header>}
+                
                     <Container style={{ margin:'2em 0' }} textAlign='center'>
                         {/* Not Working.. */}
                     {/* <OptionRenderer/> */}

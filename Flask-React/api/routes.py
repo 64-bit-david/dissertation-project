@@ -44,15 +44,16 @@ def get_all():
 
 @routes.get('/word-frequency')
 def get_word_freq(websites=None):
-    # helper function to build url? If only used once maybe not but will help with testing...
-    # try: 
+    try: 
         if not request.args.getlist('websites'):
-            return make_response(jsonify({'error': "JSON Incorrect"}), 400)
+            return make_response(jsonify({'error': "Please provide at least one 'websites' query parameter"}), 400)
         websites = request.args.getlist('websites')
+        if len(websites) > 3:
+            return make_response(jsonify({'error': "This endpoint currently accepts a maximum of 3 'websites' url parameters"}), 400)
         az_func_url = os.environ.get('AZ_FUNC_1')
         for i, website in enumerate(websites):
             if website not in news_sites.sites:
-                return make_response(jsonify({'error': f"Incorrect parameters. The website '{website}' is not currently supported "}), 400)
+                return make_response(jsonify({'error': f"Incorrect parameters. The website '{website}' is not currently supported"}), 400)
             if i == 0:
                 az_func_url += '?websites=' + website
             else:
@@ -78,21 +79,20 @@ def get_word_freq(websites=None):
 
         return make_response(res, func_response.status_code)
 
-    # except Exception:
-    #     traceback.print_exc() 
-    #     return make_response(jsonify({'error': "Internal server error. Something went wrong..."}), 500)
+    except Exception:
+        traceback.print_exc() 
+        return make_response(jsonify({'error': "Internal server error. Something went wrong..."}), 500)
 
 
 
 @routes.get('/historical-results')
 def get_24hour_results():
-    # try:
+    try:
         if not request.args.getlist('websites'):
-            return make_response(jsonify({'error': "JSON Incorrect"}), 400)
+            return make_response(jsonify({'error': "Please provide at least one 'websites' query parameter"}), 400)
         websites = request.args.getlist('websites')
         if len(websites) > 3:
-            return make_response(jsonify({'error': "Bad Request. This endpoint currently accepts a maximum of 3 'websites' url parameters"}), 400)
-        # words_list_websites = {'bbc': "", 'cnn': "",'fox': "",'msnbc': "",'guardian': "",'daily_mail': ""}
+            return make_response(jsonify({'error': "This endpoint currently accepts a maximum of 3 'websites' url parameters"}), 400)
         words_list_websites = {}
 
         for site in websites:
@@ -115,8 +115,8 @@ def get_24hour_results():
             res['sentiment'][website] = sentiment_intensity        
         
         return make_response(jsonify(res), 200)
-    # except:
-    #     return make_response(jsonify({'error': "Internal server error. Something went wrong..."}), 500)
+    except:
+        return make_response(jsonify({'error': "Internal server error. Something went wrong..."}), 500)
 
 
 
@@ -163,7 +163,7 @@ def add_frequency():
         print('word frequency data saved')
         return make_response(jsonify({'msg': 'Result saved successfully'}), 201)
     except(TypeError):
-        return make_response(jsonify({'error': "Invalid JSON"}), 400)
+        return make_response(jsonify({'error': "No JSON Supplied"}), 400)
     except(KeyError):
         return make_response(jsonify({'error': "Invalid JSON"}), 400)
     except:
@@ -266,14 +266,11 @@ def get_saved_word_frequency(result_id):
 @auth.post('/sign-up')
 def sign_up():
     try: 
-        print(request.json)
         username=request.json['username']
         password=request.json['password']
         confirm_pass = request.json['confirm_password']
         if password != confirm_pass:
-            return make_response(jsonify({'error': 'Passwords do not match'}), 400)
-        # hash_pass = generate_password_hash(password, 'sha256')
-        
+            return make_response(jsonify({'error': 'Passwords do not match'}), 400)        
         user = User.query.filter_by(username=username).first()
         if user:
             return make_response(jsonify({'error': 'Username already exists'}), 400)
@@ -307,7 +304,7 @@ def login():
                     },
                 }), 200)
             else:
-                return make_response(jsonify({'error': 'Incorrect credentials'}), 401)
+                return make_response(jsonify({'error': 'Login Information Incorrect'}), 401)
         else:
             return make_response(jsonify({'error': 'Username does not exist'}), 400)
     
